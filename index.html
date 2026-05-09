@@ -677,9 +677,9 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
 <section class="promo-section rv">
   <div class="sec-inner">
     <div class="promo-grid">
-      <div class="promo-card"><img id="promo-img-1" src="https://us.yonex.com/cdn/shop/files/ChatGPT_Image_Mar_25_2026_04_47_27_PM.png?v=1774482460&width=3840" alt="Promo 1"/></div>
-      <div class="promo-card"><img id="promo-img-2" src="https://us.yonex.com/cdn/shop/files/CLP_All_Vcore_Banner.gif?v=1773795329&width=3840" alt="Promo 2"/></div>
-      <div class="promo-card"><img id="promo-img-3" src="https://dkjulgymkya8y.cloudfront.net/images/b7f63bcf-1c3f-4f60-a9ec-c5a62a14b52e.jpg" alt="Promo 3"/></div>
+      <div class="promo-card"><img src="https://images.unsplash.com/photo-1617083934555-ac1f3dc3d4c1?w=700&q=80&fit=crop" alt="Yonex"/></div>
+      <div class="promo-card"><img src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=700&q=80&fit=crop" alt="Victor"/></div>
+      <div class="promo-card"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80&fit=crop" alt="Li-Ning"/></div>
     </div>
   </div>
 </section>
@@ -1140,37 +1140,6 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
       </div>
 
       <div class="a-card">
-        <h3>🎯 Foto Promo Banner (3 Banner)</h3>
-        <p style="font-size:13px;color:var(--gray);margin-bottom:14px">3 banner lebar di antara carousel. Gunakan foto landscape (rasio 16:9) untuk hasil terbaik.</p>
-        <div style="margin-bottom:10px">
-          <label style="font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:5px">🖼 Banner 1 (kiri)</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <img id="prev-promo-1" src="" style="width:80px;height:45px;object-fit:cover;border-radius:5px;border:1px solid var(--border);background:var(--sand)" onerror="this.style.opacity='.3'"/>
-            <input type="text" id="promo-url-1" placeholder="https://..." style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;outline:none" oninput="document.getElementById('prev-promo-1').src=this.value"/>
-          </div>
-        </div>
-        <div style="margin-bottom:10px">
-          <label style="font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:5px">🖼 Banner 2 (tengah)</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <img id="prev-promo-2" src="" style="width:80px;height:45px;object-fit:cover;border-radius:5px;border:1px solid var(--border);background:var(--sand)" onerror="this.style.opacity='.3'"/>
-            <input type="text" id="promo-url-2" placeholder="https://..." style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;outline:none" oninput="document.getElementById('prev-promo-2').src=this.value"/>
-          </div>
-        </div>
-        <div style="margin-bottom:14px">
-          <label style="font-size:12px;font-weight:700;color:var(--text);display:block;margin-bottom:5px">🖼 Banner 3 (kanan)</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <img id="prev-promo-3" src="" style="width:80px;height:45px;object-fit:cover;border-radius:5px;border:1px solid var(--border);background:var(--sand)" onerror="this.style.opacity='.3'"/>
-            <input type="text" id="promo-url-3" placeholder="https://..." style="flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;outline:none" oninput="document.getElementById('prev-promo-3').src=this.value"/>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <button class="btn-save" onclick="savePromos()">💾 Simpan Banner</button>
-          <span class="toast" id="toast-promo">✓ Disimpan!</span>
-        </div>
-        <p style="font-size:11px;color:var(--gray2);margin-top:10px">💡 Upload foto ke <a href="https://imgbb.com" target="_blank" style="color:var(--red)">ImgBB.com</a> → klik kanan → Copy Image Address → paste di sini.</p>
-      </div>
-
-      <div class="a-card">
         <h3>🖼 Foto Tile Top Category</h3>
         <p style="font-size:13px;color:var(--gray);margin-bottom:14px">Atur foto yang tampil di setiap tile kategori di halaman depan. Kalau dikosongkan, otomatis pakai foto dari produk terakhir di kategori itu.</p>
         <div id="cat-img-editor"></div>
@@ -1282,11 +1251,6 @@ let S={
     'Stringing Service':'https://dkjulgymkya8y.cloudfront.net/victor/id/product-57802_0_20181113144834.webp',
     'Senar Badminton':'https://us.yonex.com/cdn/shop/files/BG66UM_001-1.jpg?v=1770434617&width=713'
   },
-  promoImgs:[
-    'https://us.yonex.com/cdn/shop/files/ChatGPT_Image_Mar_25_2026_04_47_27_PM.png?v=1774482460&width=3840',
-    'https://us.yonex.com/cdn/shop/files/CLP_All_Vcore_Banner.gif?v=1773795329&width=3840',
-    'https://dkjulgymkya8y.cloudfront.net/images/b7f63bcf-1c3f-4f60-a9ec-c5a62a14b52e.jpg'
-  ],
   page:1, activeCat:'Semua'
 };
 
@@ -1313,7 +1277,7 @@ function resetSlider(){clearInterval(slideTimer);startSlider();}
 
 // ════ APPLY STATE ════
 function boot(){
-  applyLogo();applyHeroImg();applyPromos();applyStats();applyBrands();
+  applyLogo();applyHeroImg();applyStats();applyBrands();
   initSlider();renderCatPills();renderCatGrid();renderCarousels();renderProds();
   renderNavCats();updateCartUI();initSupabase();
   // Secret admin access via URL param ?admin or #admin
@@ -1343,23 +1307,7 @@ function applyHeroImg(){
   const u2=document.getElementById('hero-url2');if(u2)u2.value=S.heroImg2||'';
   const u3=document.getElementById('hero-url3');if(u3)u3.value=S.heroImg3||'';
 }
-function applyPromos(){
-  (S.promoImgs||[]).forEach((url,i)=>{
-    const el=document.getElementById('promo-img-'+(i+1));
-    if(el&&url)el.src=url;
-    const inp=document.getElementById('promo-url-'+(i+1));
-    if(inp)inp.value=url||'';
-    const prev=document.getElementById('prev-promo-'+(i+1));
-    if(prev&&url)prev.src=url;
-  });
-}
-function savePromos(){
-  S.promoImgs=[1,2,3].map(i=>{
-    const el=document.getElementById('promo-url-'+i);
-    return el?el.value.trim():'';
-  });
-  saveS();applyPromos();showToast('toast-promo');
-}
+function applyStats(){
   const s=S.stats;
   sH('st-t',s.t);sH('st-g',s.g);sH('st-s',s.s);sH('st-u',s.u);
   const flds={'s-t':s.t,'s-g':s.g,'s-s':s.s,'s-u':s.u,'s-rg':s.rg,'s-rgc':s.rgc,'s-rt':s.rt,'s-rtc':s.rtc,'s-rs':s.rs,'s-rsc':s.rsc};
@@ -1638,7 +1586,7 @@ function populateCatSelect(){
   sel.innerHTML=html;
 }
 function loadAdmin(){
-  applyStats();renderTable();renderAdminBrands();applyLogo();applyHeroImg();applyPromos();initSupabase();populateCatSelect();renderSportCatsAdmin();renderCatImgEditor();
+  applyStats();renderTable();renderAdminBrands();applyLogo();applyHeroImg();initSupabase();populateCatSelect();renderSportCatsAdmin();renderCatImgEditor();
   const cf=document.getElementById('adm-cat-f');
   if(cf){const cats=['',...new Set(S.products.map(p=>p.cat).filter(Boolean).sort())];const cur=cf.value;cf.innerHTML=cats.map((c,i)=>`<option value="${c}">${i===0?'Semua Kategori':c}</option>`).join('');cf.value=cur;}
   document.getElementById('prod-cnt').textContent=S.products.length;
