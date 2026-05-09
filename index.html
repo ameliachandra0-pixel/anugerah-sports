@@ -104,7 +104,7 @@ button{cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;border:none;bac
 .cat-img-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 .cat-img-grid.row2{margin-top:12px;grid-template-columns:repeat(4,1fr)}
 .cat-img-card{position:relative;background:var(--sand);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .28s;aspect-ratio:4/3}
-.cat-img-card img{width:100%;height:100%;object-fit:contain;padding:16px;transition:transform .4s cubic-bezier(.25,.46,.45,.94)}
+.cat-img-card img{width:100%;height:100%;object-fit:cover;transition:transform .4s cubic-bezier(.25,.46,.45,.94)}
 .cat-img-card:hover img{transform:scale(1.06)}
 .cat-img-card::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0);transition:background .28s}
 .cat-img-card:hover::after{background:rgba(0,0,0,.06)}
@@ -1138,6 +1138,18 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
           <span class="toast" id="toast-hero">✓ Disimpan!</span>
         </div>
       </div>
+
+      <div class="a-card">
+        <h3>🖼 Foto Tile Top Category</h3>
+        <p style="font-size:13px;color:var(--gray);margin-bottom:14px">Atur foto yang tampil di setiap tile kategori di halaman depan. Kalau dikosongkan, otomatis pakai foto dari produk terakhir di kategori itu.</p>
+        <div id="cat-img-editor"></div>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:8px">
+          <button class="btn-save" onclick="saveCatImgs()">💾 Simpan Foto Kategori</button>
+          <span class="toast" id="toast-catimg">✓ Disimpan!</span>
+        </div>
+        <p style="font-size:11px;color:var(--gray2);margin-top:10px">💡 Upload foto ke <a href="https://imgbb.com" target="_blank" style="color:var(--red)">ImgBB.com</a> → klik kanan gambar → Copy Image Address → paste di sini.</p>
+      </div>
+
       <div class="a-card">
         <h3>🔐 Ganti Password Admin</h3>
         <div class="fg-row">
@@ -1229,6 +1241,16 @@ let S={
   heroImg3:'https://us.yonex.com/cdn/shop/files/ChatGPT_Image_Mar_25_2026_04_47_27_PM.png?v=1774482460&width=1400',
   pw:'anugerah2024',
   sbUrl:'',sbKey:'',
+  catImgOverrides:{
+    'Raket Badminton':'https://us.yonex.com/cdn/shop/files/arc11-p.png?v=1738288163&width=713',
+    'Sepatu Badminton':'https://us.yonex.com/cdn/shop/files/ALL_SHBVAZW1_452-1.jpg?v=1774307001&width=713',
+    'Tas Badminton':'https://dkjulgymkya8y.cloudfront.net/images/52317e6b-6677-4d43-9b05-e8217e256e84.webp',
+    'Aksesoris Olahraga':'https://dkjulgymkya8y.cloudfront.net/images/ccb20dd3-b46c-4ebd-9acc-fc66b9c73673.webp',
+    'Pakaian Badminton':'https://dkjulgymkya8y.cloudfront.net/victor/id/product-134567_0_20250428160938.webp',
+    'Shuttlecock':'https://us.yonex.com/cdn/shop/collections/LG7_N_A_0933.jpg?v=1740017753',
+    'Stringing Service':'https://dkjulgymkya8y.cloudfront.net/victor/id/product-57802_0_20181113144834.webp',
+    'Senar Badminton':'https://us.yonex.com/cdn/shop/files/BG66UM_001-1.jpg?v=1770434617&width=713'
+  },
   page:1, activeCat:'Semua'
 };
 
@@ -1339,37 +1361,28 @@ function renderCatGrid(){
   const allSubs=[];
   S.sportCats.forEach(s=>s.sub.forEach(sub=>allSubs.push({name:sub,sport:s.sport,icon:s.icon})));
   const top8=allSubs.slice(0,8);
-  // Map category names to product images
-  const catImageMap={
-    'Raket Badminton':'https://us.yonex.com/cdn/shop/files/arc11-p.png?v=1738288163&width=400',
-    'Shuttlecock':'https://dkjulgymkya8y.cloudfront.net/images/f50599b6-2bd6-4c21-825c-7cf31cb668f8.webp',
-    'Sepatu Badminton':'https://us.yonex.com/cdn/shop/files/ALL_SHBVAZW1_452-1.jpg?v=1774307001&width=400',
-    'Tas Badminton':'https://dkjulgymkya8y.cloudfront.net/images/ccb20dd3-b46c-4ebd-9acc-fc66b9c73673.webp',
-    'Senar Badminton':'https://us.yonex.com/cdn/shop/files/BG66UM_001-1.jpg?v=1770434617&width=400',
-    'Raket Padel':'https://dkjulgymkya8y.cloudfront.net/images/52317e6b-6677-4d43-9b05-e8217e256e84.webp',
-    'Raket Tenis':'https://dkjulgymkya8y.cloudfront.net/images/b7f63bcf-1c3f-4f60-a9ec-c5a62a14b52e.jpg',
-    'Pakaian Badminton':'https://us.yonex.com/cdn/shop/collections/LG7_N_A_0933.jpg?v=1740017753',
-  };
+  // Reliable Unsplash fallbacks per index
   const fallbacks=[
-    'https://us.yonex.com/cdn/shop/files/arc11-p.png?v=1738288163&width=400',
-    'https://dkjulgymkya8y.cloudfront.net/images/52317e6b-6677-4d43-9b05-e8217e256e84.webp',
-    'https://dkjulgymkya8y.cloudfront.net/images/ccb20dd3-b46c-4ebd-9acc-fc66b9c73673.webp',
-    'https://us.yonex.com/cdn/shop/files/BG66UM_001-1.jpg?v=1770434617&width=400',
-    'https://dkjulgymkya8y.cloudfront.net/images/f50599b6-2bd6-4c21-825c-7cf31cb668f8.webp',
-    'https://us.yonex.com/cdn/shop/files/ALL_SHBVAZW1_452-1.jpg?v=1774307001&width=400',
-    'https://dkjulgymkya8y.cloudfront.net/images/b7f63bcf-1c3f-4f60-a9ec-c5a62a14b52e.jpg',
-    'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80'
+    'https://images.unsplash.com/photo-1617083934555-ac1f3dc3d4c1?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1556906781-9a412961a28e?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1593351415075-3bac9f45c877?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=600&q=80&fit=crop'
   ];
   function getImgForCat(catName){
-    // First: last product with that category + image
+    // Priority 1: admin-set override in S.catImgOverrides
+    if(S.catImgOverrides&&S.catImgOverrides[catName]) return S.catImgOverrides[catName];
+    // Priority 2: last product with that category that has an image
     const prods=S.products.filter(p=>p.cat===catName&&p.img);
-    if(prods.length)return prods[prods.length-1].img;
-    // Second: static map
-    return catImageMap[catName]||null;
+    if(prods.length) return prods[prods.length-1].img;
+    return null;
   }
   const makeCard=(item,idx)=>{
     const img=getImgForCat(item.name)||fallbacks[idx%8];
-    const safeCat=item.name.replace(/'/g,"\\'");
+    const safeCat=item.name.replace(/'/g,"\'");
     return`<div class="cat-img-card" onclick="setCat('${safeCat}');document.getElementById('catalog').scrollIntoView({behavior:'smooth'})"><img src="${img}" alt="${item.name}" onerror="this.src='${fallbacks[idx%8]}'"/><div class="cat-img-label">${item.icon} ${item.name}</div></div>`;
   };
   const g1=document.getElementById('cat-grid-1');
@@ -1573,7 +1586,7 @@ function populateCatSelect(){
   sel.innerHTML=html;
 }
 function loadAdmin(){
-  applyStats();renderTable();renderAdminBrands();applyLogo();applyHeroImg();initSupabase();populateCatSelect();renderSportCatsAdmin();
+  applyStats();renderTable();renderAdminBrands();applyLogo();applyHeroImg();initSupabase();populateCatSelect();renderSportCatsAdmin();renderCatImgEditor();
   const cf=document.getElementById('adm-cat-f');
   if(cf){const cats=['',...new Set(S.products.map(p=>p.cat).filter(Boolean).sort())];const cur=cf.value;cf.innerHTML=cats.map((c,i)=>`<option value="${c}">${i===0?'Semua Kategori':c}</option>`).join('');cf.value=cur;}
   document.getElementById('prod-cnt').textContent=S.products.length;
@@ -1852,6 +1865,48 @@ function initSupabase(){
   }
 }
 
+// ════ CATEGORY IMAGE EDITOR ════
+function renderCatImgEditor(){
+  const el=document.getElementById('cat-img-editor');
+  if(!el)return;
+  // Get top 8 subcats (same as shown on homepage)
+  const allSubs=[];
+  S.sportCats.forEach(s=>s.sub.forEach(sub=>allSubs.push(sub)));
+  const top8=allSubs.slice(0,8);
+  const overrides=S.catImgOverrides||{};
+  el.innerHTML=top8.map(cat=>{
+    const safeId='catimg_'+cat.replace(/[^a-zA-Z0-9]/g,'_');
+    const curImg=overrides[cat]||'';
+    return`<div style="display:grid;grid-template-columns:60px 1fr;gap:10px;align-items:center;margin-bottom:10px;padding:10px;background:var(--sand);border-radius:8px;border:1.5px solid var(--border)">
+      <div style="width:56px;height:56px;border-radius:7px;overflow:hidden;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center">
+        <img id="prev_${safeId}" src="${curImg||'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2218%22 font-size=%2218%22>🖼</text></svg>'}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:5px">${cat}</div>
+        <input type="text" id="${safeId}" value="${curImg}" placeholder="https://... (kosongkan = pakai foto produk)"
+          style="width:100%;padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;outline:none"
+          oninput="const p=document.getElementById('prev_${safeId}');p.style.display='block';p.src=this.value||'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22/>'"/>
+      </div>
+    </div>`;
+  }).join('');
+}
+function saveCatImgs(){
+  const allSubs=[];
+  S.sportCats.forEach(s=>s.sub.forEach(sub=>allSubs.push(sub)));
+  const top8=allSubs.slice(0,8);
+  if(!S.catImgOverrides)S.catImgOverrides={};
+  top8.forEach(cat=>{
+    const safeId='catimg_'+cat.replace(/[^a-zA-Z0-9]/g,'_');
+    const el=document.getElementById(safeId);
+    if(el){
+      const val=el.value.trim();
+      if(val)S.catImgOverrides[cat]=val;
+      else delete S.catImgOverrides[cat];
+    }
+  });
+  saveS();renderCatGrid();showToast('toast-catimg');
+}
+
 // ════ SPORT CATEGORY MANAGEMENT ════
 function renderSportCatsAdmin(){
   const el=document.getElementById('sport-cats-admin');
@@ -1898,7 +1953,7 @@ function removeSport(si){
   S.sportCats.splice(si,1);
   renderSportCatsAdmin();populateCatSelect();renderNavCats();renderCatGrid();
 }
-function saveSportCats(){saveS();renderSportCatsAdmin();populateCatSelect();renderNavCats();renderCatGrid();showToast('toast-sc');}
+function saveSportCats(){saveS();renderSportCatsAdmin();populateCatSelect();renderNavCats();renderCatGrid();renderCatImgEditor();showToast('toast-sc');}
 
 // ── Scroll Reveal ──
 const rvObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');rvObs.unobserve(x.target);}}),{threshold:.06});
