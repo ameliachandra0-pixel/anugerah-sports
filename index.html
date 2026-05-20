@@ -995,6 +995,41 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
     <!-- PRODUK TAB -->
     <div class="a-panel on" id="tab-produk">
       <div class="a-card">
+        <h3>📥 Import Produk dari CSV/Excel</h3>
+        <p style="font-size:13px;color:var(--gray);margin-bottom:12px">Download template Excel, isi data produk, simpan sebagai CSV, lalu upload di sini. Semua produk langsung masuk sekaligus.</p>
+        <div style="background:var(--sand);border-radius:8px;padding:12px;margin-bottom:12px;border:1.5px solid var(--border)">
+          <div style="font-size:12px;font-weight:700;margin-bottom:8px">Langkah-langkah:</div>
+          <div style="font-size:12px;color:var(--gray);line-height:1.8">
+            1️⃣ Download template Excel di bawah<br>
+            2️⃣ Isi data produk (bisa ratusan sekaligus)<br>
+            3️⃣ Di Excel: <strong>File → Save As → CSV UTF-8</strong><br>
+            4️⃣ Upload file CSV di sini<br>
+            5️⃣ Klik <strong>Upload ke Supabase</strong> di tab Supabase
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <label style="flex:1;min-width:200px;border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;background:#fff" id="csv-drop-zone">
+            <div style="font-size:24px;margin-bottom:6px">📂</div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">Upload File CSV</div>
+            <div style="font-size:11px;color:var(--gray2);margin-top:3px">Klik atau drag & drop file .csv</div>
+            <input type="file" id="csv-file-inp" accept=".csv" style="display:none" onchange="handleCSVUpload(this)"/>
+          </label>
+        </div>
+        <div id="csv-preview" style="display:none">
+          <div style="font-size:12px;font-weight:700;margin-bottom:6px" id="csv-preview-title"></div>
+          <div style="max-height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;font-size:11px" id="csv-preview-table"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn-save" id="csv-import-btn" onclick="importCSV()">✅ Import Semua Produk</button>
+            <button class="btn-edit-s" onclick="document.getElementById('csv-preview').style.display='none';document.getElementById('csv-file-inp').value=''">✕ Batal</button>
+            <span id="csv-mode-toggle" style="font-size:12px;color:var(--gray)">
+              <label style="cursor:pointer"><input type="checkbox" id="csv-append" checked> Tambahkan ke produk yang ada (jangan hapus)</label>
+            </span>
+          </div>
+        </div>
+        <div id="csv-result" style="display:none;margin-top:8px;padding:8px 12px;border-radius:6px;font-size:12px;font-weight:700"></div>
+      </div>
+
+      <div class="a-card">
         <h3 id="prod-form-h">➕ Tambah Produk Baru</h3>
         <div class="fg-row">
           <div class="fg"><label>Nama Produk *</label><input type="text" id="f-name" placeholder="Raket Yonex Astrox 99 Play"/></div>
@@ -2061,6 +2096,109 @@ function removeSport(si){
   renderSportCatsAdmin();populateCatSelect();renderNavCats();renderCatGrid();
 }
 function saveSportCats(){saveS();renderSportCatsAdmin();populateCatSelect();renderNavCats();renderCatGrid();renderCatImgEditor();showToast('toast-sc');}
+
+
+// ════ CSV IMPORT ════
+let csvParsed = [];
+function handleCSVUpload(input){
+  const file = input.files[0];
+  if(!file) return;
+  const zone = document.getElementById('csv-drop-zone');
+  zone.style.borderColor = 'var(--red)';
+  zone.style.background = '#fff5f5';
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const text = e.target.result;
+    csvParsed = parseCSV(text);
+    showCSVPreview(csvParsed);
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+function parseCSV(text){
+  const lines = text.split(/\r?\n/).filter(l=>l.trim());
+  if(!lines.length) return [];
+  // Auto-detect separator
+  const sep = lines[0].includes(';') ? ';' : ',';
+  const headers = lines[0].split(sep).map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase());
+  const rows = [];
+  for(let i=1;i<lines.length;i++){
+    const vals = splitCSVLine(lines[i], sep);
+    if(vals.every(v=>!v.trim())) continue;
+    const obj = {};
+    headers.forEach((h,j)=>obj[h]=(vals[j]||'').trim().replace(/^"|"$/g,''));
+    rows.push(obj);
+  }
+  return rows;
+}
+function splitCSVLine(line, sep){
+  const result = [];
+  let cur = '', inQ = false;
+  for(let i=0;i<line.length;i++){
+    const ch = line[i];
+    if(ch==='"') inQ=!inQ;
+    else if(ch===sep && !inQ){result.push(cur);cur='';}
+    else cur+=ch;
+  }
+  result.push(cur);
+  return result;
+}
+function showCSVPreview(rows){
+  const preview = document.getElementById('csv-preview');
+  const title = document.getElementById('csv-preview-title');
+  const table = document.getElementById('csv-preview-table');
+  if(!rows.length){title.textContent='Tidak ada data ditemukan';preview.style.display='block';return;}
+  title.textContent = rows.length+' produk siap diimport — preview 5 pertama:';
+  const cols = ['name','brand','price','wa_price','cat','section'];
+  let html = '<table style="width:100%;border-collapse:collapse">';
+  html += '<tr>'+cols.map(c=>'<th style="padding:6px 8px;background:var(--navy);color:#fff;text-align:left;white-space:nowrap;font-size:10px">'+c+'</th>').join('')+'</tr>';
+  rows.slice(0,5).forEach((r,i)=>{
+    html += '<tr style="background:'+(i%2?'var(--sand)':'#fff')+'">';
+    cols.forEach(c=>{ html += '<td style="padding:5px 8px;border-bottom:1px solid var(--border);font-size:11px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r[c]||'—')+'</td>'; });
+    html += '</tr>';
+  });
+  html += '</table>';
+  table.innerHTML = html;
+  preview.style.display = 'block';
+}
+function importCSV(){
+  if(!csvParsed.length) return;
+  const append = document.getElementById('csv-append').checked;
+  const newProds = csvParsed.map(r=>({
+    id: r.id || ('p'+Date.now()+Math.random().toString(36).slice(2,6)),
+    name: r.name||'',
+    brand: r.brand||'',
+    price: r.price?+r.price.replace(/[^0-9]/g,''):null,
+    waPrice: r.wa_price?+r.wa_price.replace(/[^0-9]/g,''):null,
+    salePrice: r.sale_price?+r.sale_price.replace(/[^0-9]/g,''):null,
+    cat: r.cat||'',
+    section: r.section||'all',
+    desc: r.description||r.desc||'',
+    img: r.img||r.foto||'',
+    tokoUrl: r.toko_url||'',
+    shopeeUrl: r.shopee_url||'',
+    destyUrl: r.desty_url||''
+  })).filter(p=>p.name);
+  if(append){
+    // Merge: update existing by id/name, add new
+    newProds.forEach(np=>{
+      const idx = S.products.findIndex(p=>p.id===np.id||(p.name===np.name&&p.brand===np.brand));
+      if(idx>=0) S.products[idx]=np; else S.products.unshift(np);
+    });
+  } else {
+    S.products = newProds;
+  }
+  saveS();renderProds();renderCarousels();renderNavCats();renderTable();renderCatGrid();
+  document.getElementById('prod-cnt').textContent = S.products.length;
+  const res = document.getElementById('csv-result');
+  res.textContent = '✅ '+newProds.length+' produk berhasil diimport! Jangan lupa klik Upload ke Supabase di tab Supabase.';
+  res.style.display = 'block';
+  res.style.background = '#e8f5e9';
+  res.style.color = '#2e7d32';
+  document.getElementById('csv-preview').style.display='none';
+  document.getElementById('csv-file-inp').value='';
+  document.getElementById('csv-drop-zone').style.borderColor='var(--border)';
+  document.getElementById('csv-drop-zone').style.background='#fff';
+}
 
 // ── Scroll Reveal ──
 const rvObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');rvObs.unobserve(x.target);}}),{threshold:.06});
