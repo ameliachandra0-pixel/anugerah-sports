@@ -136,7 +136,24 @@ button{cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;border:none;bac
 .prod-body{padding:10px 12px 13px;flex:1;display:flex;flex-direction:column}
 .prod-brand{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray2);margin-bottom:3px}
 .prod-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.35;flex:1;margin-bottom:8px}
-.prod-price-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+/* ══ WA PRICE DUAL PRICING ══ */
+.prod-wa-price-wrap{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:1.5px solid #a5d6a7;border-radius:8px;padding:6px 10px;margin-bottom:6px}
+.prod-wa-label{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#2e7d32;display:flex;align-items:center;gap:4px;margin-bottom:2px}
+.prod-wa-price{font-size:17px;font-weight:800;color:#1b5e20}
+.prod-market-price{font-size:11px;color:var(--gray2);display:flex;align-items:center;gap:6px;margin-top:2px}
+.prod-market-strike{text-decoration:line-through}
+.prod-wa-save-badge{background:#c8102e;color:#fff;font-size:9px;font-weight:800;padding:2px 5px;border-radius:3px}
+/* Modal dual price */
+.m-price-dual{margin-bottom:14px}
+.m-wa-box{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border:2px solid #66bb6a;border-radius:10px;padding:10px 14px;margin-bottom:8px}
+.m-wa-box-label{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#2e7d32;margin-bottom:3px;display:flex;align-items:center;gap:5px}
+.m-wa-box-price{font-size:28px;font-weight:800;color:#1b5e20;line-height:1}
+.m-wa-box-sub{font-size:11px;color:#388e3c;margin-top:3px}
+.m-market-row{display:flex;align-items:center;gap:10px;padding:6px 10px;background:var(--sand);border-radius:7px;border:1px solid var(--border)}
+.m-market-label{font-size:10px;font-weight:700;color:var(--gray);white-space:nowrap}
+.m-market-price{font-size:14px;font-weight:700;color:var(--gray2)}
+.m-market-note{font-size:10px;color:var(--gray2);margin-left:auto}
+.prod-price-row{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-bottom:4px}
 .prod-price-orig{font-size:12px;color:var(--gray2);text-decoration:line-through}
 .prod-price-sale{font-size:16px;font-weight:800;color:var(--red)}
 .prod-price-only{font-size:16px;font-weight:800;color:var(--text)}
@@ -370,23 +387,24 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
   position:absolute;top:calc(100% + 1px);left:50%;transform:translateX(-50%);
   background:#16162a;border:1px solid rgba(255,255,255,.1);border-top:3px solid var(--red);
   border-radius:0 0 12px 12px;box-shadow:0 16px 48px rgba(0,0,0,.45);
-  display:none;width:640px;z-index:999;
-  grid-template-columns:1fr 180px;
+  display:none;width:780px;z-index:999;
+  grid-template-columns:1fr 160px;
+  max-height:420px;
 }
 .nav-item-drop:hover .mega-drop,.mega-drop:hover{display:grid}
-.mega-cats-col{padding:16px 0 16px 16px;display:flex;flex-direction:column}
-.mega-brands-col{padding:16px;border-left:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.15);border-radius:0 0 12px 0}
+.mega-cats-col{padding:12px 14px;overflow-y:auto;max-height:420px}
+.mega-brands-col{padding:12px;border-left:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.2);border-radius:0 0 14px 0;overflow-y:auto;max-height:420px}
 .mega-sport-block{margin-bottom:4px}
 .mega-sport-h{
   font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;
   color:var(--red);padding:8px 10px 4px;display:flex;align-items:center;gap:6px
 }
 .mega-sport-h::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06)}
-.mega-sub-row{display:flex;flex-wrap:wrap;gap:2px;padding:0 6px 6px}
+.mega-sub-row{column-count:3;column-gap:0;padding:0 0 6px 2px}
 .mega-link{
   font-size:12px;font-weight:500;color:rgba(255,255,255,.6);
   padding:4px 9px;border-radius:4px;transition:all .12s;text-decoration:none;
-  white-space:nowrap;display:inline-block
+  display:block;break-inside:avoid;white-space:nowrap
 }
 .mega-link:hover{background:rgba(200,16,46,.2);color:#fff}
 .mega-col-title{
@@ -561,7 +579,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
   <div class="hero-slides" id="hero-slides">
     <!-- Slide 1: Default badminton hero -->
     <div class="hero-slide">
-      <img src="" id="hero-bg-img" alt="Anugerah Sports"/>
+      <img src="https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=1400&q=80&fit=crop" id="hero-bg-img" alt="Anugerah Sports"/>
       <div class="hero-slide-overlay"></div>
       <div class="hero-slide-content">
         <div class="hero-slide-tag">Toko Olahraga Malang · Est. 1974</div>
@@ -919,7 +937,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
     <div class="modal-body">
       <div class="m-brand" id="m-brand"></div>
       <div class="m-name" id="m-name"></div>
-      <div class="m-price-row"><span class="m-orig" id="m-orig"></span><span class="m-price" id="m-price"></span></div>
+      <div class="m-price-dual" id="m-price-row"></div>
       <div class="m-desc" id="m-desc"></div>
       <div class="m-order-box">
         <div class="m-lbl">Jumlah Pesanan</div>
@@ -983,8 +1001,16 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
           <div class="fg"><label>Brand *</label><input type="text" id="f-brand" placeholder="Yonex" list="b-dl"/><datalist id="b-dl"></datalist></div>
         </div>
         <div class="fg-row">
-          <div class="fg"><label>Harga Normal (Rp) *</label><input type="number" id="f-price" placeholder="1499000"/></div>
-          <div class="fg"><label>Harga Promo (Rp) — isi jika ada diskon</label><input type="number" id="f-sale" placeholder="1259000"/></div>
+          <div class="fg"><label>Harga Marketplace (Rp) — Tokopedia/Shopee *</label><input type="number" id="f-price" placeholder="1499000"/></div>
+          <div class="fg">
+            <label>💬 Harga WhatsApp (Rp) — lebih murah dari marketplace</label>
+            <input type="number" id="f-wa-price" placeholder="1399000"/>
+            <span style="font-size:11px;color:#2e7d32;margin-top:3px;display:block">✅ Harga WA tampil lebih besar & hijau di website</span>
+          </div>
+        </div>
+        <div class="fg-row">
+          <div class="fg"><label>Harga Coret (Rp) — harga asli sebelum diskon (opsional)</label><input type="number" id="f-sale" placeholder="1799000"/></div>
+          <div class="fg"></div>
         </div>
         <div class="fg-row">
           <div class="fg"><label>Kategori *</label>
@@ -1191,6 +1217,7 @@ CREATE TABLE IF NOT EXISTS products (
   name TEXT NOT NULL,
   brand TEXT,
   price NUMERIC,
+  wa_price NUMERIC,
   sale_price NUMERIC,
   cat TEXT,
   section TEXT DEFAULT 'all',
@@ -1254,8 +1281,23 @@ let S={
   page:1, activeCat:'Semua'
 };
 
-function loadS(){try{const d=localStorage.getItem('as4');if(d)Object.assign(S,JSON.parse(d));}catch(e){}}
-function saveS(){try{localStorage.setItem('as4',JSON.stringify(S));}catch(e){}}
+const STATE_VERSION='as4v15';
+function loadS(){
+  try{
+    ['as4','as4v1','as4v2','as4v3','as4v4','as4v5','as4v6','as4v7','as4v8','as4v9','as4v10','as4v11','as4v12','as4v13','as4v14'].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
+    const d=localStorage.getItem(STATE_VERSION);
+    if(d){
+      const saved=JSON.parse(d);
+      Object.keys(saved).forEach(k=>{
+        const v=saved[k];
+        if(v===null||v===undefined||v==='')return;
+        if(Array.isArray(v)&&v.length===0)return;
+        S[k]=v;
+      });
+    }
+  }catch(e){}
+}
+function saveS(){try{localStorage.setItem(STATE_VERSION,JSON.stringify(S));}catch(e){}}
 loadS();
 
 // ════ HERO SLIDER ════
@@ -1394,35 +1436,51 @@ function renderNavCats(){
   const ml=document.getElementById('mob-cat-list');
   if(ml){
     let mHtml='';
-    S.sportCats.forEach(s=>{
-      mHtml+=`<div style="padding:8px 20px 4px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red)">${s.icon} ${s.sport}</div>`;
-      s.sub.forEach(sub=>{
-        const esc=sub.replace(/'/g,"\\'");
-        mHtml+=`<div style="padding:8px 28px;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:1px solid var(--border)" onclick="setCat('${esc}');closeMob();document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">${sub}</div>`;
+    S.sportCats.forEach(function(s){
+      mHtml+='<div style="padding:8px 20px 4px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#C8102E">'+s.icon+' '+s.sport+'</div>';
+      s.sub.forEach(function(sub){
+        mHtml+='<div class="mob-cat-item" data-cat="'+sub.replace(/"/g,'&quot;')+'" style="padding:8px 28px;font-size:13px;cursor:pointer;border-bottom:1px solid #eee">'+sub+'</div>';
       });
     });
     ml.innerHTML=mHtml;
+    ml.querySelectorAll('.mob-cat-item').forEach(function(el){
+      el.addEventListener('click',function(){
+        setCat(this.dataset.cat);closeMob();document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
+      });
+    });
   }
-      const megaCats=document.getElementById('mega-cats');
+  const megaCats=document.getElementById('mega-cats');
   if(megaCats){
     let html='';
-    S.sportCats.forEach(s=>{
-      html+=`<div class="mega-sport-block"><div class="mega-sport-h">${s.icon} ${s.sport}</div><div class="mega-sub-row">`;
-      s.sub.forEach(sub=>{
-        const esc=sub.replace(/'/g,"\\'");
-        html+=`<a href="#catalog" class="mega-link" onclick="setCat('${esc}');document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">${sub}</a>`;
+    S.sportCats.forEach(function(s){
+      const cols=s.sub.length<=3?'2':'3';
+      html+='<div class="mega-sport-block"><div class="mega-sport-h">'+s.icon+' '+s.sport+'</div>';
+      html+='<div class="mega-sub-row" style="column-count:'+cols+'">';
+      s.sub.forEach(function(sub){
+        html+='<a href="#catalog" class="mega-link" data-cat="'+sub.replace(/"/g,'&quot;')+'">'+sub+'</a>';
       });
       html+='</div></div>';
     });
+    html+='<a href="#catalog" class="mega-link" data-cat="Semua" style="color:#C8102E;font-weight:700;border-top:1px solid rgba(255,255,255,.07);display:block;margin-top:6px;padding-top:8px">Lihat Semua Produk</a>';
     megaCats.innerHTML=html;
+    megaCats.querySelectorAll('.mega-link[data-cat]').forEach(function(el){
+      el.addEventListener('click',function(e){
+        e.preventDefault();setCat(this.dataset.cat);document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
+      });
+    });
   }
   const megaBrands=document.getElementById('mega-brands-drop');
   if(megaBrands){
-    let bhtml='<div class="mega-col-title">🏷 Brand</div>';
-    S.brands.forEach(b=>{
-      bhtml+=`<a href="#catalog" class="mega-brand-link" onclick="setCat('Semua');document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">${b}</a>`;
+    let bhtml='<div class="mega-col-title">Brand</div>';
+    S.brands.forEach(function(b){
+      bhtml+='<a href="#catalog" class="mega-brand-link">'+b+'</a>';
     });
     megaBrands.innerHTML=bhtml;
+    megaBrands.querySelectorAll('.mega-brand-link').forEach(function(el){
+      el.addEventListener('click',function(e){
+        e.preventDefault();document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
+      });
+    });
   }
 }
 function setCat(c){S.activeCat=c;S.page=1;renderCatPills();renderProds();}
@@ -1457,23 +1515,42 @@ function renderProds(){
 }
 
 function prodCardHTML(p){
-  const hasDisc=p.price&&p.salePrice&&p.salePrice<p.price;
-  const displayPrice=hasDisc?p.salePrice:p.price;
-  const discPct=hasDisc?Math.round((1-p.salePrice/p.price)*100):0;
-  const priceHTML=displayPrice
-    ?`<span class="${hasDisc?'prod-price-sale':'prod-price-only'}">Rp${Number(displayPrice).toLocaleString('id-ID')}</span>`
-    :'<span class="prod-price-only" style="font-size:13px;color:var(--gray)">Hubungi Kami</span>';
-  const origHTML=hasDisc?`<span class="prod-price-orig">Rp${Number(p.price).toLocaleString('id-ID')}</span>`:'';
-  const discBadge=hasDisc?`<div class="prod-discount-badge">-${discPct}%</div>`:'';
+  const hasWA=p.waPrice&&p.waPrice>0;
+  const hasMarket=p.price&&p.price>0;
+  const hasSale=p.salePrice&&p.salePrice>0;
+  // Discount badge based on original vs market price
+  const discPct=(hasSale&&hasMarket)?Math.round((1-p.salePrice/p.price)*100):0;
+  const discBadge=discPct>0?`<div class="prod-discount-badge">-${discPct}%</div>`:'';
   const imgH=p.img
     ?`<img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div class="prod-img-ph" style="display:none">🏸</div>`
     :`<div class="prod-img-ph">🏸</div>`;
+
+  let priceBlock='';
+  if(hasWA){
+    // WA savings vs marketplace
+    const savings=(hasMarket&&p.waPrice<p.price)?p.price-p.waPrice:null;
+    const savingsHTML=savings?`<span class="prod-wa-save-badge">Hemat Rp${Number(savings).toLocaleString('id-ID')}</span>`:'';
+    const marketLine=hasMarket
+      ?`<div class="prod-market-price"><span class="prod-market-strike">Marketplace: Rp${Number(p.price).toLocaleString('id-ID')}</span>${savingsHTML}</div>`:'';
+    priceBlock=`<div class="prod-wa-price-wrap">
+      <div class="prod-wa-label">💬 Harga WA</div>
+      <div class="prod-wa-price">Rp${Number(p.waPrice).toLocaleString('id-ID')}</div>
+      ${marketLine}
+    </div>`;
+  } else if(hasMarket){
+    const orig=hasSale?`<span class="prod-price-orig">Rp${Number(p.price).toLocaleString('id-ID')}</span>`:'';
+    const shown=hasSale?p.salePrice:p.price;
+    priceBlock=`<div class="prod-price-row">${orig}<span class="${hasSale?'prod-price-sale':'prod-price-only'}">Rp${Number(shown).toLocaleString('id-ID')}</span></div>`;
+  } else {
+    priceBlock=`<div class="prod-price-row"><span class="prod-price-only" style="font-size:13px;color:var(--gray)">Hubungi Kami</span></div>`;
+  }
+
   return`<div class="prod-card" onclick="openModal('${p.id}')">
     <div class="prod-img-wrap">${imgH}${discBadge}</div>
     <div class="prod-body">
       <div class="prod-brand">${p.brand||''}</div>
       <div class="prod-name">${p.name}</div>
-      <div class="prod-price-row">${origHTML}${priceHTML}</div>
+      ${priceBlock}
       <button class="btn-pesan" onclick="event.stopPropagation();openModal('${p.id}')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Pesan via WA
       </button>
@@ -1498,14 +1575,47 @@ function goP(p){S.page=p;renderProds();document.getElementById('catalog').scroll
 let curP=null;
 function openModal(id){
   const p=S.products.find(x=>x.id===id);if(!p)return;curP=p;
-  const hasDisc=p.price&&p.salePrice&&p.salePrice<p.price;
-  const displayPrice=hasDisc?p.salePrice:p.price;
   document.getElementById('m-brand').textContent=p.brand||'';
   document.getElementById('m-name').textContent=p.name;
-  document.getElementById('m-orig').textContent=hasDisc?'Rp'+Number(p.price).toLocaleString('id-ID'):'';
-  document.getElementById('m-price').textContent=displayPrice?'Rp'+Number(displayPrice).toLocaleString('id-ID'):'Hubungi Kami';
   document.getElementById('m-desc').textContent=p.desc||'Hubungi kami via WhatsApp untuk info lengkap tentang produk ini.';
   document.getElementById('m-note').value='';document.getElementById('qty-inp').value=1;
+
+  // ── Dual Price Display ──
+  const hasWA=p.waPrice&&p.waPrice>0;
+  const hasMarket=p.price&&p.price>0;
+  const priceRow=document.getElementById('m-price-row');
+  if(priceRow){
+    if(hasWA&&hasMarket){
+      const savings=p.waPrice<p.price?p.price-p.waPrice:0;
+      const savePct=savings?Math.round(savings/p.price*100):0;
+      priceRow.innerHTML=`
+        <div class="m-wa-box">
+          <div class="m-wa-box-label">💬 Harga WhatsApp — Lebih Murah!</div>
+          <div class="m-wa-box-price">Rp${Number(p.waPrice).toLocaleString('id-ID')}</div>
+          ${savings?`<div class="m-wa-box-sub">Hemat Rp${Number(savings).toLocaleString('id-ID')} (${savePct}%) dibanding marketplace</div>`:''}
+        </div>
+        <div class="m-market-row">
+          <span class="m-market-label">🛍️ Harga Marketplace</span>
+          <span class="m-market-price">Rp${Number(p.price).toLocaleString('id-ID')}</span>
+          <span class="m-market-note">Tokopedia / Shopee</span>
+        </div>`;
+    } else if(hasWA){
+      priceRow.innerHTML=`<div class="m-wa-box">
+        <div class="m-wa-box-label">💬 Harga WhatsApp</div>
+        <div class="m-wa-box-price">Rp${Number(p.waPrice).toLocaleString('id-ID')}</div>
+      </div>`;
+    } else if(hasMarket){
+      const hasSale=p.salePrice&&p.salePrice<p.price;
+      const shown=hasSale?p.salePrice:p.price;
+      priceRow.innerHTML=`<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+        ${hasSale?`<span class="m-orig">Rp${Number(p.price).toLocaleString('id-ID')}</span>`:''}
+        <span class="m-price">Rp${Number(shown).toLocaleString('id-ID')}</span>
+      </div>`;
+    } else {
+      priceRow.innerHTML=`<span class="m-price" style="font-size:18px;color:var(--gray)">Hubungi Kami</span>`;
+    }
+  }
+
   // platform buttons
   const platforms=[];
   if(p.tokoUrl)platforms.push({label:'Tokopedia',icon:'🛍️',url:p.tokoUrl});
@@ -1517,7 +1627,6 @@ function openModal(id){
     pbSection.style.display='block';
     pbInner.innerHTML=platforms.map(pl=>`<a href="${pl.url}" target="_blank" class="btn-buy-platform"><span>${pl.icon}</span>${pl.label}</a>`).join('');
   }else{pbSection.style.display='none';}
-  // add to cart button reset
   const addBtn=document.getElementById('btn-add-cart');
   if(addBtn){addBtn.textContent='🛒 Tambah ke Keranjang';addBtn.classList.remove('added');}
   const wrap=document.getElementById('modal-img-wrap');
@@ -1533,23 +1642,18 @@ function chgQ(d){const i=document.getElementById('qty-inp');i.value=Math.max(1,M
 function orderWA(){
   if(!curP)return;
   const qty=document.getElementById('qty-inp').value,note=document.getElementById('m-note').value;
-  const hasDisc=curP.price&&curP.salePrice&&curP.salePrice<curP.price;
-  const displayPrice=hasDisc?curP.salePrice:curP.price;
-  const price=displayPrice?'Rp'+Number(displayPrice).toLocaleString('id-ID'):'harga belum ditentukan';
-  let msg=`Halo Anugerah Sports! 👋
-
-Saya ingin memesan:
-📦 *${curP.name}*
-`;
-  if(curP.brand)msg+=`Brand: ${curP.brand}
-`;
-  msg+=`Harga: ${price}
-Jumlah: ${qty} pcs
-`;
-  if(note)msg+=`Catatan: ${note}
-`;
-  msg+=`
-Mohon konfirmasi stok & ongkos kirim. Terima kasih! 🙏`;
+  const hasWA=curP.waPrice&&curP.waPrice>0;
+  const hasMarket=curP.price&&curP.price>0;
+  const waPrice=hasWA?'Rp'+Number(curP.waPrice).toLocaleString('id-ID'):null;
+  const marketPrice=hasMarket?'Rp'+Number(curP.price).toLocaleString('id-ID'):null;
+  let msg=`Halo Anugerah Sports! 👋\n\nSaya ingin memesan:\n📦 *${curP.name}*\n`;
+  if(curP.brand)msg+=`Brand: ${curP.brand}\n`;
+  if(waPrice)msg+=`Harga WA: *${waPrice}*\n`;
+  else if(marketPrice)msg+=`Harga: ${marketPrice}\n`;
+  else msg+=`Harga: mohon konfirmasi\n`;
+  msg+=`Jumlah: ${qty} pcs\n`;
+  if(note)msg+=`Catatan: ${note}\n`;
+  msg+=`\nMohon konfirmasi stok & ongkos kirim. Terima kasih! 🙏`;
   window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`,'_blank');
 }
 
@@ -1595,7 +1699,7 @@ function loadAdmin(){
 // ── Prod Form ──
 let editId=null;
 function resetForm(){
-  ['f-name','f-brand','f-price','f-sale','f-desc','f-img','f-toko','f-shopee','f-desty'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-name','f-brand','f-price','f-wa-price','f-sale','f-desc','f-img','f-toko','f-shopee','f-desty'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   document.getElementById('f-cat').value='';document.getElementById('f-section').value='all';
   document.getElementById('prod-form-h').textContent='➕ Tambah Produk Baru';editId=null;
 }
@@ -1605,11 +1709,12 @@ function saveProd(){
   if(!name){alert('Nama produk wajib diisi!');return;}
   if(!cat){alert('Kategori wajib dipilih!');return;}
   const price=document.getElementById('f-price').value?+document.getElementById('f-price').value:null;
+  const waPrice=document.getElementById('f-wa-price').value?+document.getElementById('f-wa-price').value:null;
   const sale=document.getElementById('f-sale').value?+document.getElementById('f-sale').value:null;
   const p={
     id:editId||'p'+Date.now(),name,
     brand:document.getElementById('f-brand').value.trim(),
-    price, salePrice:sale, cat,
+    price, waPrice, salePrice:sale, cat,
     section:document.getElementById('f-section').value||'all',
     desc:document.getElementById('f-desc').value.trim(),
     img:document.getElementById('f-img').value.trim(),
@@ -1627,7 +1732,9 @@ function saveProd(){
 function editProd(id){
   const p=S.products.find(x=>x.id===id);if(!p)return;editId=id;
   document.getElementById('f-name').value=p.name||'';document.getElementById('f-brand').value=p.brand||'';
-  document.getElementById('f-price').value=p.price||'';document.getElementById('f-sale').value=p.salePrice||'';
+  document.getElementById('f-price').value=p.price||'';
+  document.getElementById('f-wa-price').value=p.waPrice||'';
+  document.getElementById('f-sale').value=p.salePrice||'';
   document.getElementById('f-cat').value=p.cat||'';document.getElementById('f-section').value=p.section||'all';
   document.getElementById('f-desc').value=p.desc||'';document.getElementById('f-img').value=p.img||'';
   document.getElementById('f-toko').value=p.tokoUrl||'';document.getElementById('f-shopee').value=p.shopeeUrl||'';
@@ -1714,7 +1821,7 @@ function saveCart(){try{localStorage.setItem('as4cart',JSON.stringify(cart));}ca
 function addToCart(prod,qty,note){
   const existing=cart.find(i=>i.id===prod.id&&i.note===note);
   if(existing){existing.qty+=qty;}
-  else{cart.push({id:prod.id,name:prod.name,brand:prod.brand||'',price:prod.price,salePrice:prod.salePrice,img:prod.img||'',tokoUrl:prod.tokoUrl||'',shopeeUrl:prod.shopeeUrl||'',destyUrl:prod.destyUrl||'',qty,note:note||''});}
+  else{cart.push({id:prod.id,name:prod.name,brand:prod.brand||'',price:prod.price,waPrice:prod.waPrice,salePrice:prod.salePrice,img:prod.img||'',tokoUrl:prod.tokoUrl||'',shopeeUrl:prod.shopeeUrl||'',destyUrl:prod.destyUrl||'',qty,note:note||''});}
   saveCart();updateCartUI();bumpBadge();
 }
 function removeFromCart(idx){cart.splice(idx,1);saveCart();updateCartUI();renderCartItems();}
@@ -1753,11 +1860,11 @@ function renderCartItems(){
     return;
   }
   if(footer)footer.style.display='block';
-  const totalPrice=cart.reduce((s,i)=>{const p=i.salePrice&&i.salePrice<i.price?i.salePrice:i.price;return s+(p||0)*i.qty;},0);
+  const totalPrice=cart.reduce((s,i)=>{const p=i.waPrice&&i.waPrice>0?i.waPrice:(i.salePrice&&i.salePrice<i.price?i.salePrice:i.price);return s+(p||0)*i.qty;},0);
   const tp=document.getElementById('cart-total-price');
   if(tp)tp.textContent=totalPrice?'Rp'+Number(totalPrice).toLocaleString('id-ID'):'Hubungi Kami';
   list.innerHTML=cart.map((item,idx)=>{
-    const dispPrice=item.salePrice&&item.salePrice<item.price?item.salePrice:item.price;
+    const dispPrice=item.waPrice&&item.waPrice>0?item.waPrice:(item.salePrice&&item.salePrice<item.price?item.salePrice:item.price);
     const priceStr=dispPrice?'Rp'+Number(dispPrice).toLocaleString('id-ID'):'Tanya Harga';
     const imgH=item.img?`<img src="${item.img}" class="cart-item-img" onerror="this.outerHTML='<div class=cart-item-img-ph>🏸</div>'"/>`:`<div class="cart-item-img-ph">🏸</div>`;
     return`<div class="cart-item">
@@ -1781,8 +1888,8 @@ function checkoutWA(){
   if(!cart.length)return;
   let msg=`Halo Anugerah Sports! 👋\n\nSaya ingin memesan:\n\n`;
   cart.forEach((item,i)=>{
-    const dispPrice=item.salePrice&&item.salePrice<item.price?item.salePrice:item.price;
-    const priceStr=dispPrice?'Rp'+Number(dispPrice).toLocaleString('id-ID'):'tanya harga';
+    const dispPrice=item.waPrice&&item.waPrice>0?item.waPrice:(item.salePrice&&item.salePrice<item.price?item.salePrice:item.price);
+    const priceStr=dispPrice?(item.waPrice?'*Rp'+Number(dispPrice).toLocaleString('id-ID')+' (Harga WA)*':'Rp'+Number(dispPrice).toLocaleString('id-ID')):'tanya harga';
     msg+=`${i+1}. *${item.name}*\n`;
     if(item.brand)msg+=`   Brand: ${item.brand}\n`;
     msg+=`   Harga: ${priceStr}\n   Jumlah: ${item.qty} pcs\n`;
@@ -1832,7 +1939,7 @@ async function syncPush(){
   showSbMsg('⏳ Mengupload produk...','ok');
   try{
     const rows=S.products.map(p=>({
-      id:p.id,name:p.name,brand:p.brand||null,price:p.price||null,sale_price:p.salePrice||null,
+      id:p.id,name:p.name,brand:p.brand||null,price:p.price||null,wa_price:p.waPrice||null,sale_price:p.salePrice||null,
       cat:p.cat||null,section:p.section||'all',description:p.desc||null,img:p.img||null,
       toko_url:p.tokoUrl||null,shopee_url:p.shopeeUrl||null,desty_url:p.destyUrl||null
     }));
@@ -1848,7 +1955,7 @@ async function syncPull(){
     const{data,error}=await sbClient.from('products').select('*').order('created_at',{ascending:false});
     if(error)throw error;
     S.products=data.map(r=>({
-      id:r.id,name:r.name,brand:r.brand||'',price:r.price||null,salePrice:r.sale_price||null,
+      id:r.id,name:r.name,brand:r.brand||'',price:r.price||null,waPrice:r.wa_price||null,salePrice:r.sale_price||null,
       cat:r.cat||'',section:r.section||'all',desc:r.description||'',img:r.img||'',
       tokoUrl:r.toko_url||'',shopeeUrl:r.shopee_url||'',destyUrl:r.desty_url||''
     }));
