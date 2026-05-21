@@ -2021,8 +2021,40 @@ function initSupabase(){
   if(S.sbUrl&&S.sbKey){
     const u=document.getElementById('sb-url');const k=document.getElementById('sb-key');
     if(u)u.value=S.sbUrl;if(k)k.value=S.sbKey;
-    connectSupabase();
+    // Auto-connect and pull products for ALL visitors
+    try{
+      sbClient=supabase.createClient(S.sbUrl,S.sbKey);
+      // Auto-pull products silently on every page load
+      autoLoadFromSupabase();
+    }catch(e){console.warn('Supabase init failed',e);}
   }
+}
+
+async function autoLoadFromSupabase(){
+  if(!sbClient)return;
+  try{
+    const{data,error}=await sbClient.from('products').select('*').order('created_at',{ascending:false});
+    if(error||!data||!data.length)return;
+    // Update products from Supabase
+    S.products=data.map(r=>({
+      id:r.id,name:r.name,brand:r.brand||'',price:r.price||null,
+      waPrice:r.wa_price||null,salePrice:r.sale_price||null,
+      cat:r.cat||'',section:r.section||'all',desc:r.description||'',img:r.img||'',
+      tokoUrl:r.toko_url||'',shopeeUrl:r.shopee_url||'',destyUrl:r.desty_url||''
+    }));
+    saveS();
+    // Re-render everything with fresh data
+    renderProds();renderCarousels();renderNavCats();renderBrandPills();renderCatGrid();renderCatPills();
+    const cnt=document.getElementById('prod-cnt');
+    if(cnt)cnt.textContent=S.products.length;
+    // Update admin Supabase status if panel is open
+    const dot=document.getElementById('sb-dot');
+    const status=document.getElementById('sb-status');
+    const syncBtns=document.getElementById('sb-sync-btns');
+    if(dot)dot.classList.add('connected');
+    if(status)status.textContent='Terhubung — '+S.products.length+' produk dimuat dari Supabase';
+    if(syncBtns)syncBtns.style.display='flex';
+  }catch(e){console.warn('Auto-load from Supabase failed',e);}
 }
 
 // ════ CATEGORY IMAGE EDITOR ════
