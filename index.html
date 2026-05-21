@@ -1306,7 +1306,7 @@ let S={
   heroImg2:'https://dkjulgymkya8y.cloudfront.net/images/b7f63bcf-1c3f-4f60-a9ec-c5a62a14b52e.jpg',
   heroImg3:'https://us.yonex.com/cdn/shop/files/ChatGPT_Image_Mar_25_2026_04_47_27_PM.png?v=1774482460&width=1400',
   pw:'anugerah2024',
-  sbUrl:'',sbKey:'',
+  sbUrl:'https://dpzjhwxvconhblvkuusk.supabase.co',sbKey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwempod3h2Y29uaGJsdmt1dXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjM3NTIsImV4cCI6MjA5NDgzOTc1Mn0.wULX7pY08XLZex9PAl-r60xwaTz_SRTyTSUtn3XM-pI',
   catImgOverrides:{
     'Raket Badminton':'https://us.yonex.com/cdn/shop/files/arc11-p.png?v=1738288163&width=713',
     'Sepatu Badminton':'https://us.yonex.com/cdn/shop/files/ALL_SHBVAZW1_452-1.jpg?v=1774307001&width=713',
@@ -1320,10 +1320,10 @@ let S={
   page:1, activeCat:'Semua', activeBrand:'Semua'
 };
 
-const STATE_VERSION='as4v15';
+const STATE_VERSION='as4v17';
 function loadS(){
   try{
-    ['as4','as4v1','as4v2','as4v3','as4v4','as4v5','as4v6','as4v7','as4v8','as4v9','as4v10','as4v11','as4v12','as4v13','as4v14'].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
+    ['as4','as4v1','as4v2','as4v3','as4v4','as4v5','as4v6','as4v7','as4v8','as4v9','as4v10','as4v11','as4v12','as4v13','as4v14','as4v15','as4v16'].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
     const d=localStorage.getItem(STATE_VERSION);
     if(d){
       const saved=JSON.parse(d);
