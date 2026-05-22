@@ -1793,6 +1793,7 @@ function renderProds(){
   const slice=all.slice((S.page-1)*PER,S.page*PER);
   const rl=document.getElementById('res-lbl');if(rl)rl.textContent=all.length+' produk';
   const grid=document.getElementById('prod-grid');if(!grid)return;
+  grid.innerHTML=''; // Always clear first (removes skeletons)
   if(!slice.length){
     grid.innerHTML=`<div class="empty-state"><div class="empty-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px">Produk tidak ditemukan</div><div style="font-size:14px;color:var(--gray)">Coba kata kunci lain atau pilih kategori berbeda</div></div>`;
   }else{
@@ -2274,27 +2275,31 @@ async function autoLoadFromSupabase(){
   showSkeletons();
   try{
     const{data,error}=await sbClient.from('products').select('*').order('created_at',{ascending:false});
-    if(error||!data||!data.length)return;
-    // Update products from Supabase
-    S.products=data.map(r=>({
-      id:r.id,name:r.name,brand:r.brand||'',price:r.price||null,
-      waPrice:r.wa_price||null,salePrice:r.sale_price||null,
-      cat:r.cat||'',section:r.section||'all',desc:r.description||'',img:r.img||'',
-      tokoUrl:r.toko_url||'',shopeeUrl:r.shopee_url||'',destyUrl:r.desty_url||''
-    }));
-    saveS();
-    // Re-render everything with fresh data
+    if(error) throw error;
+    if(data&&data.length){
+      S.products=data.map(r=>({
+        id:r.id,name:r.name,brand:r.brand||'',price:r.price||null,
+        waPrice:r.wa_price||null,salePrice:r.sale_price||null,
+        cat:r.cat||'',section:r.section||'all',desc:r.description||'',img:r.img||'',
+        tokoUrl:r.toko_url||'',shopeeUrl:r.shopee_url||'',destyUrl:r.desty_url||''
+      }));
+      saveS();
+    }
+    // Always re-render — even if empty, clears the skeletons
     renderProds();renderCarousels();renderNavCats();renderCatGrid();renderFltDropdowns();
     const cnt=document.getElementById('prod-cnt');
     if(cnt)cnt.textContent=S.products.length;
-    // Update admin Supabase status if panel is open
     const dot=document.getElementById('sb-dot');
     const status=document.getElementById('sb-status');
     const syncBtns=document.getElementById('sb-sync-btns');
     if(dot)dot.classList.add('connected');
     if(status)status.textContent='Terhubung — '+S.products.length+' produk dimuat dari Supabase';
     if(syncBtns)syncBtns.style.display='flex';
-  }catch(e){console.warn('Auto-load from Supabase failed',e);}
+  }catch(e){
+    console.warn('Auto-load from Supabase failed',e);
+    // On error, still render with whatever is in localStorage
+    renderProds();renderFltDropdowns();
+  }
 }
 
 // ════ CATEGORY IMAGE EDITOR ════
