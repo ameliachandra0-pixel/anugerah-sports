@@ -190,54 +190,17 @@ button{cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;border:none;bac
 
 /* ══ CATALOG SECTION ══ */
 .catalog-section{background:var(--sand);padding:3rem 0}
-/* ══ FILTER BAR ══ */
-.filter-bar-wrap{background:#fff;border:1.5px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:visible;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.filter-bar-top{display:flex;align-items:center;gap:10px;padding:12px 16px;flex-wrap:wrap}
-.filter-count-badge{font-size:11px;font-weight:700;color:#fff;background:var(--red);border-radius:10px;padding:1px 7px;margin-left:4px;display:none}
-.filter-count-badge.show{display:inline-block}
-.filter-result{font-size:12px;color:var(--gray);font-weight:500;margin-left:auto;white-space:nowrap}
-.filter-clear{font-size:12px;font-weight:700;color:var(--red);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:5px;display:none;white-space:nowrap}
-.filter-clear:hover{background:#fff0f0}
-.filter-clear.show{display:block}
-.filter-divider{width:1px;height:24px;background:var(--border);flex-shrink:0}
-/* Dropdown filter buttons */
-.flt-btn{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;position:relative}
-.flt-btn:hover{border-color:var(--navy);background:var(--sand)}
-.flt-btn.active{border-color:var(--red);color:var(--red);background:#fff5f5}
-.flt-btn svg{flex-shrink:0;transition:transform .2s}
-.flt-btn.open svg.chevron{transform:rotate(180deg)}
-.flt-btn .flt-val{max-width:120px;overflow:hidden;text-overflow:ellipsis}
-/* Sort select */
-.sort-sel{padding:7px 32px 7px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--text);background:#fff;cursor:pointer;outline:none;font-family:'Plus Jakarta Sans',sans-serif;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.filter-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 16px;background:#fff;border:1.5px solid var(--border);border-radius:9px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.fl-label{font-size:11px;font-weight:700;color:var(--gray2);letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+.pill-scroll{display:flex;gap:6px;flex:1;overflow-x:auto;scrollbar-width:none}
+.pill-scroll::-webkit-scrollbar{display:none}
+.cat-pill{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--gray);background:#fff;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.cat-pill.on{background:var(--text);color:#fff;border-color:var(--text)}
+.cat-pill:hover:not(.on){border-color:var(--text);color:var(--text)}
+.filter-right{display:flex;gap:8px;align-items:center;margin-left:auto;flex-shrink:0}
+.sort-sel{padding:7px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-weight:600;color:var(--text);background:#fff;cursor:pointer;outline:none;font-family:'Plus Jakarta Sans',sans-serif}
 .sort-sel:focus{border-color:var(--red)}
-/* Dropdown panel */
-.flt-dropdown{position:absolute;top:calc(100% + 6px);left:0;min-width:220px;background:#fff;border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:500;padding:6px;display:none;max-height:320px;overflow-y:auto}
-.flt-dropdown.open{display:block}
-.flt-dropdown::-webkit-scrollbar{width:4px}
-.flt-dropdown::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-/* Sport group in category dropdown */
-.flt-sport-h{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--red);padding:10px 10px 4px;margin-top:2px}
-.flt-sport-h:first-child{margin-top:0}
-.flt-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);transition:all .15s}
-.flt-opt:hover{background:var(--sand)}
-.flt-opt.selected{background:#fff0f0;color:var(--red);font-weight:700}
-.flt-opt .flt-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
-.flt-opt.selected .flt-check{background:var(--red);border-color:var(--red);color:#fff}
-.flt-opt-count{font-size:11px;color:var(--gray2);margin-left:auto;font-weight:500}
-/* Search in dropdown */
-.flt-search{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:'Plus Jakarta Sans',sans-serif;outline:none;margin-bottom:6px}
-.flt-search:focus{border-color:var(--red)}
-/* Active filter tags */
-.filter-tags{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px;margin-top:-4px}
-.filter-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#fff0f0;border:1px solid #fcccd2;border-radius:20px;font-size:11px;font-weight:700;color:var(--red)}
-.filter-tag button{background:none;border:none;cursor:pointer;color:var(--red);padding:0;display:flex;align-items:center;font-size:13px;line-height:1}
-.filter-tag button:hover{opacity:.7}
-@media(max-width:600px){
-  .filter-bar-top{gap:7px}
-  .flt-btn .flt-val{max-width:80px}
-  .filter-result{display:none}
-  .flt-dropdown{min-width:200px}
-}
+.res-lbl{font-size:12px;color:var(--gray);font-weight:500;white-space:nowrap}
 .empty-state{grid-column:1/-1;text-align:center;padding:4rem 1rem;background:#fff;border-radius:10px;border:1.5px solid var(--border)}
 .empty-icon{font-size:48px;opacity:.15;margin-bottom:12px}
 .pagination{display:flex;justify-content:center;gap:5px;margin-top:22px;flex-wrap:wrap}
@@ -531,37 +494,6 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
 .sb-sync-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
 .sb-sync-btn{flex:1;padding:8px;border-radius:6px;border:1px solid #3E3E55;background:#15151E;color:rgba(255,255,255,.7);font-size:11px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
 .sb-sync-btn:hover{background:#7C3AED;border-color:#7C3AED;color:#fff}
-/* FLOATING WA */
-.wa-float{position:fixed;bottom:24px;right:24px;z-index:1200;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:13px 20px;border-radius:50px;box-shadow:0 4px 20px rgba(37,211,102,.45);cursor:pointer;text-decoration:none;font-size:14px;font-weight:700;transition:all .3s;font-family:'Plus Jakarta Sans',sans-serif}
-.wa-float:hover{background:#1DAA56;transform:translateY(-3px)}
-.wa-float-label{white-space:nowrap}
-.wa-float-pulse{position:absolute;inset:-4px;border-radius:50px;border:2px solid rgba(37,211,102,.4);animation:wapulse 2s infinite;pointer-events:none}
-@keyframes wapulse{0%{transform:scale(1);opacity:1}70%{transform:scale(1.15);opacity:0}100%{opacity:0}}
-@media(max-width:600px){.wa-float-label{display:none}.wa-float{padding:14px;border-radius:50%}}
-.back-top{position:fixed;bottom:24px;left:24px;z-index:1200;width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,0,0,.2);transition:all .3s}
-.back-top.show{display:flex}
-.back-top:hover{background:var(--red);transform:translateY(-2px)}
-.nav-search-wrap{position:relative;display:flex;align-items:center;gap:4px}
-.nav-search-inp{width:0;padding:0;border:1.5px solid transparent;background:transparent;transition:all .3s;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;outline:none;border-radius:8px}
-.nav-search-inp.open{width:180px;padding:7px 12px;border-color:var(--border);background:#fff}
-.nav-search-inp.open:focus{border-color:var(--red)}
-.skel{background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);background-size:200% 100%;animation:skel 1.4s infinite;border-radius:8px}
-@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.prod-skel{border-radius:12px;overflow:hidden;background:#fff;border:1.5px solid var(--border)}
-.prod-skel-img{height:200px}
-.prod-skel-body{padding:12px;display:flex;flex-direction:column;gap:8px}
-.prod-skel-line{height:12px;border-radius:4px}
-.prod-skel-line.short{width:55%}
-.prod-skel-line.price{height:22px;width:65%}
-.prod-skel-line.prod-skel-btn{height:34px;margin-top:4px}
-.prod-card:hover{box-shadow:0 8px 30px rgba(0,0,0,.1);transform:translateY(-3px);border-color:transparent}
-.prod-card:hover .prod-img-wrap img{transform:scale(1.05)}
-.prod-card-btns{display:flex;gap:6px;margin-top:auto;padding-top:8px}
-.btn-quick-wa{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;background:#25D366;color:#fff;border:none;border-radius:7px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
-.btn-quick-wa:hover{background:#1DAA56}
-.btn-detail{flex:1.5;display:flex;align-items:center;justify-content:center;gap:5px;background:var(--navy);color:#fff;border:none;border-radius:7px;padding:8px 4px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Plus Jakarta Sans',sans-serif}
-.btn-detail:hover{background:var(--red)}
-
 </style>
 </head>
 <body>
@@ -602,12 +534,9 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
       <button class="nav-icon-btn" id="admin-nav-btn" onclick="openLogin()" title="Admin" style="display:none">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </button>
-      <div class="nav-search-wrap">
-        <input class="nav-search-inp" id="nav-search-main" type="text" placeholder="Cari produk..." oninput="searchFromNav(this.value)" onkeydown="if(event.key==='Escape'){this.value='';this.classList.remove('open');searchFromNav('');}if(event.key==='Enter')document.getElementById('catalog').scrollIntoView({behavior:'smooth'})"/>
-        <button class="nav-icon-btn" onclick="toggleNavSearch()" title="Cari">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
-      </div>
+      <button class="nav-icon-btn" onclick="document.getElementById('nav-q-hidden').focus();document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" title="Cari">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
       <div class="cart-btn-wrap">
         <button class="nav-icon-btn" onclick="openCart()" title="Keranjang" id="cart-nav-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -866,44 +795,23 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
     </div>
     <!-- hidden search input synced with nav -->
     <input type="text" id="nav-q-hidden" style="opacity:0;height:0;width:0;position:absolute" oninput="filterProds()"/>
-    <div class="filter-bar-wrap rv">
-      <div class="filter-bar-top">
-        <!-- Category dropdown -->
-        <div style="position:relative">
-          <button class="flt-btn" id="flt-cat-btn" onclick="toggleFltDrop('cat')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-            <span class="flt-val" id="flt-cat-val">Semua Kategori</span>
-            <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="flt-dropdown" id="flt-cat-drop"></div>
-        </div>
-        <!-- Brand dropdown -->
-        <div style="position:relative">
-          <button class="flt-btn" id="flt-brand-btn" onclick="toggleFltDrop('brand')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-            <span class="flt-val" id="flt-brand-val">Semua Brand</span>
-            <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="flt-dropdown" id="flt-brand-drop"></div>
-        </div>
-        <div class="filter-divider"></div>
-        <!-- Sort -->
+    <div class="filter-bar rv">
+      <span class="fl-label">Kategori:</span>
+      <div class="pill-scroll" id="cat-pills"></div>
+    </div>
+    <div class="filter-bar rv" style="margin-top:8px">
+      <span class="fl-label">Brand:</span>
+      <div class="pill-scroll" id="brand-pills"></div>
+      <div class="filter-right">
         <select class="sort-sel" id="sort-sel" onchange="filterProds()">
-          <option value="">Urutkan</option>
+          <option value="">Default</option>
           <option value="price-asc">Harga Termurah</option>
           <option value="price-desc">Harga Termahal</option>
           <option value="name-asc">Nama A–Z</option>
         </select>
-        <!-- Result count + clear -->
-        <span class="filter-result" id="res-lbl"></span>
-        <button class="filter-clear" id="filter-clear-btn" onclick="clearAllFilters()">Hapus Filter</button>
+        <span class="res-lbl" id="res-lbl"></span>
       </div>
-      <!-- Active filter tags -->
-      <div class="filter-tags" id="filter-tags" style="display:none"></div>
     </div>
-    <!-- Hidden pill elements kept for JS compatibility -->
-    <div id="cat-pills" style="display:none"></div>
-    <div id="brand-pills" style="display:none"></div>
     <div class="prod-grid-view rv" id="prod-grid"></div>
     <div class="pagination" id="pagination"></div>
   </div>
@@ -938,7 +846,7 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
     <div>
       <div class="f-logo"><img src="data:image/png;base64,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Z/tw/Cj4eftDfEj9tO5t7vxvpk/gnwn8PfBHh4x3dudY8V291eRtDPG939qkNv5Um8yyRny/LH36/rg8HfsY/s2eDLy31W08Kwale2gxBe6zJLqt1F7pPevNMn4OK/n68Q/8ENPEHiT/AIKVW37Qd/8AJ4XtrcwQXMEyQwwxCWcR3C/vftH2+GwmfT4f3XlRfJdCXzY/LpNyX2TejgsDWVqdZpxau5qMVy63sk3drTRO7vojqv8Agjx/wTM1XF3+13+1VdQeKvFPia4FxdXJHmw39zBKTGkPmA502wkH+iDObq6V72Uv/o3l/wBSNc34e0PSfDGjWvhvw9bpaWVlCsMEMQwkccYCqoHYAAACukq7WOLGYr20lGCtTjpFdl+rb1b6vZJWQUUUUHGf/9H+/iiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/S/v4ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/0/7+KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA/9T+/iiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/V/v4ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==" alt="Anugerah Sports" id="logo-footer"/></div>
       <p class="f-desc">Authorized Distributor perlengkapan dan pakaian olahraga antara lain merek Victor, Li-Ning, Yonex, dan lain-lainnya. Terpercaya sejak 1974.</p>
-      <div class="f-social-label">Temukan Kami</div>
+      <div class="f-social-label">Find Us On</div>
       <div class="f-socials" id="f-socials-render">
         <a href="https://shopee.co.id/anugerahsports" target="_blank" class="f-soc" title="Shopee">
           <svg width="18" height="18" viewBox="0 0 32 32" fill="currentColor"><path d="M24.5 10.5h-2a6.5 6.5 0 0 0-13 0h-2A3.5 3.5 0 0 0 4 14v11a3.5 3.5 0 0 0 3.5 3.5h17A3.5 3.5 0 0 0 28 25V14a3.5 3.5 0 0 0-3.5-3.5ZM16 5a4.5 4.5 0 0 1 4.5 4.5h-9A4.5 4.5 0 0 1 16 5Zm3 14.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
@@ -999,15 +907,6 @@ footer{background:#fff;border-top:1px solid var(--border);padding:3rem 0 0}
   </div>
 </footer>
 
-
-<a href="https://wa.me/6285755000069" target="_blank" class="wa-float">
-  <div class="wa-float-pulse"></div>
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.561 4.14 1.535 5.874L.057 23.986l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.893 9.893 0 01-5.045-1.378l-.361-.214-3.741.981.998-3.648-.235-.374A9.86 9.86 0 012.106 12C2.106 6.561 6.561 2.106 12 2.106c5.438 0 9.894 4.455 9.894 9.894 0 5.438-4.456 9.894-9.894 9.894z"/></svg>
-  <span class="wa-float-label">Chat WhatsApp</span>
-</a>
-<button class="back-top" id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
-</button>
 <!-- CART DRAWER -->
 <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
 <div class="cart-drawer" id="cart-drawer">
@@ -1460,7 +1359,7 @@ function resetSlider(){clearInterval(slideTimer);startSlider();}
 // ════ APPLY STATE ════
 function boot(){
   applyLogo();applyHeroImg();applyStats();applyBrands();
-  initSlider();renderCatGrid();renderCarousels();renderProds();renderFltDropdowns();
+  initSlider();renderCatPills();renderBrandPills();renderCatGrid();renderCarousels();renderProds();
   renderNavCats();updateCartUI();initSupabase();
   // Secret admin access via URL param ?admin or #admin
   const isAdmin=location.search.includes('admin')||location.hash.includes('admin');
@@ -1535,176 +1434,43 @@ function scrollCarousel(id,dir){
 // ════ CATALOG ════
 function getCats(){return['Semua',...new Set(S.products.map(p=>p.cat).filter(Boolean).sort())];}
 function renderCatPills(){
-  // Legacy - now handled by renderFltDropdowns
-  renderFltDropdowns();
+  const wrap=document.getElementById('cat-pills');
+  if(!wrap)return;
+  wrap.innerHTML=getCats().map(c=>`<button class="cat-pill${c===S.activeCat?' on':''}" onclick="setCat('${c.replace(/'/g,"\'")}')"> ${c}</button>`).join('');
 }
-function renderBrandPills(){
-  // Legacy - now handled by renderFltDropdowns
-  renderFltDropdowns();
-}
-
-function renderFltDropdowns(){
-  renderCatDropdown();
-  renderBrandDropdown();
-  renderFilterTags();
-  updateClearBtn();
-}
-
-function renderCatDropdown(){
-  const drop = document.getElementById('flt-cat-drop');
-  const val = document.getElementById('flt-cat-val');
-  if(!drop) return;
-
-  // Count products per category
-  const counts = {};
-  S.products.forEach(function(p){ if(p.cat) counts[p.cat] = (counts[p.cat]||0)+1; });
-
-  let html = '<div style="padding:6px 4px 4px"><input class="flt-search" id="cat-search" placeholder="Cari kategori..." oninput="filterCatOpts(this.value)"/></div>';
-  // All option
-  html += '<div class="flt-opt'+(S.activeCat==='Semua'?' selected':'')+'" data-cat="Semua">';
-  html += '<div class="flt-check">'+(S.activeCat==='Semua'?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>';
-  html += 'Semua Kategori<span class="flt-opt-count">'+S.products.length+'</span></div>';
-
-  S.sportCats.forEach(function(s){
-    const hasCat = s.sub.some(function(sub){ return counts[sub]>0; });
-    if(!hasCat) return;
-    html += '<div class="flt-sport-h">'+s.icon+' '+s.sport+'</div>';
-    s.sub.forEach(function(sub){
-      if(!counts[sub]) return;
-      const sel = S.activeCat===sub;
-      html += '<div class="flt-opt'+(sel?' selected':'')+'" data-cat="'+sub.replace(/"/g,'&quot;')+'">';
-      html += '<div class="flt-check">'+(sel?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>';
-      html += sub+'<span class="flt-opt-count">'+counts[sub]+'</span></div>';
-    });
-  });
-  drop.innerHTML = html;
-
-  // Attach events using data attributes
-  drop.querySelectorAll('.flt-opt[data-cat]').forEach(function(el){
-    el.addEventListener('click', function(){ setCatFlt(this.dataset.cat); });
-  });
-
-  // Update button label
-  if(val) val.textContent = S.activeCat==='Semua' ? 'Semua Kategori' : S.activeCat;
-  const btn = document.getElementById('flt-cat-btn');
-  if(btn) btn.classList.toggle('active', S.activeCat!=='Semua');
-}
-
-function filterCatOpts(q){
-  const drop = document.getElementById('flt-cat-drop');
-  if(!drop) return;
-  drop.querySelectorAll('.flt-opt[data-cat]').forEach(function(el){
-    const cat = el.dataset.cat||'';
-    el.style.display = (!q || cat.toLowerCase().includes(q.toLowerCase())) ? '' : 'none';
-  });
-  drop.querySelectorAll('.flt-sport-h').forEach(function(el){
-    // Show sport header if any of its siblings are visible
-    let next = el.nextElementSibling;
-    let anyVisible = false;
-    while(next && !next.classList.contains('flt-sport-h')){
-      if(next.style.display !== 'none') anyVisible = true;
-      next = next.nextElementSibling;
-    }
-    el.style.display = anyVisible ? '' : 'none';
-  });
-}
-
-function renderBrandDropdown(){
-  const drop = document.getElementById('flt-brand-drop');
-  const val = document.getElementById('flt-brand-val');
-  if(!drop) return;
-
-  const counts = {};
-  S.products.forEach(function(p){ if(p.brand) counts[p.brand] = (counts[p.brand]||0)+1; });
-  const brands = Object.keys(counts).sort();
-
-  let html = '<div class="flt-opt'+(S.activeBrand==='Semua'?' selected':'')+'" data-brand="Semua">';
-  html += '<div class="flt-check">'+(S.activeBrand==='Semua'?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>';
-  html += 'Semua Brand<span class="flt-opt-count">'+S.products.length+'</span></div>';
-
-  brands.forEach(function(b){
-    const sel = S.activeBrand===b;
-    html += '<div class="flt-opt'+(sel?' selected':'')+'" data-brand="'+b.replace(/"/g,'&quot;')+'">';
-    html += '<div class="flt-check">'+(sel?'<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>':'')+'</div>';
-    html += b+'<span class="flt-opt-count">'+counts[b]+'</span></div>';
-  });
-  drop.innerHTML = html;
-
-  drop.querySelectorAll('.flt-opt[data-brand]').forEach(function(el){
-    el.addEventListener('click', function(){ setBrandFlt(this.dataset.brand); });
-  });
-
-  if(val) val.textContent = S.activeBrand==='Semua' ? 'Semua Brand' : S.activeBrand;
-  const btn = document.getElementById('flt-brand-btn');
-  if(btn) btn.classList.toggle('active', S.activeBrand!=='Semua');
-}
-
-function renderFilterTags(){
-  const wrap = document.getElementById('filter-tags');
-  if(!wrap) return;
-  const tags = [];
-  if(S.activeCat!=='Semua') tags.push({label:S.activeCat, clear:"setCatFlt('Semua')"});
-  if(S.activeBrand!=='Semua') tags.push({label:S.activeBrand, clear:"setBrandFlt('Semua')"});
-  if(!tags.length){ wrap.style.display='none'; return; }
-  wrap.style.display='flex';
-  wrap.innerHTML = tags.map(function(t,i){
-    return '<span class="filter-tag">'+t.label+'<button data-clear="'+i+'" title="Hapus"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></span>';
-  }).join('');
-  wrap.querySelectorAll('button[data-clear]').forEach(function(btn){
-    var idx=parseInt(btn.dataset.clear);
-    btn.addEventListener('click',function(){
-      if(idx===0)setCatFlt('Semua'); else setBrandFlt('Semua');
-    });
-  });
-}
-
-function updateClearBtn(){
-  const btn = document.getElementById('filter-clear-btn');
-  if(!btn) return;
-  const active = S.activeCat!=='Semua' || S.activeBrand!=='Semua';
-  btn.classList.toggle('show', active);
-}
-
-function clearAllFilters(){
-  S.activeCat='Semua'; S.activeBrand='Semua'; S.page=1;
-  closeFltDrops(); renderFltDropdowns(); renderProds();
-}
-
-function setCatFlt(c){
-  S.activeCat=c; S.activeBrand='Semua'; S.page=1;
-  closeFltDrops(); renderFltDropdowns(); renderProds();
-}
-function setBrandFlt(b){
-  S.activeBrand=b; S.activeCat='Semua'; S.page=1;
-  closeFltDrops(); renderFltDropdowns(); renderProds();
-}
-
-function toggleFltDrop(type){
-  const catDrop = document.getElementById('flt-cat-drop');
-  const brandDrop = document.getElementById('flt-brand-drop');
-  const catBtn = document.getElementById('flt-cat-btn');
-  const brandBtn = document.getElementById('flt-brand-btn');
-  if(type==='cat'){
-    const isOpen = catDrop.classList.contains('open');
-    closeFltDrops();
-    if(!isOpen){ catDrop.classList.add('open'); catBtn.classList.add('open'); setTimeout(function(){const s=document.getElementById('cat-search');if(s)s.focus();},50); }
-  } else {
-    const isOpen = brandDrop.classList.contains('open');
-    closeFltDrops();
-    if(!isOpen){ brandDrop.classList.add('open'); brandBtn.classList.add('open'); }
+function renderCatGrid(){
+  const allSubs=[];
+  S.sportCats.forEach(s=>s.sub.forEach(sub=>allSubs.push({name:sub,sport:s.sport,icon:s.icon})));
+  const top8=allSubs.slice(0,8);
+  // Reliable Unsplash fallbacks per index
+  const fallbacks=[
+    'https://images.unsplash.com/photo-1617083934555-ac1f3dc3d4c1?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1556906781-9a412961a28e?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1593351415075-3bac9f45c877?w=600&q=80&fit=crop',
+    'https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=600&q=80&fit=crop'
+  ];
+  function getImgForCat(catName){
+    // Priority 1: admin-set override in S.catImgOverrides
+    if(S.catImgOverrides&&S.catImgOverrides[catName]) return S.catImgOverrides[catName];
+    // Priority 2: last product with that category that has an image
+    const prods=S.products.filter(p=>p.cat===catName&&p.img);
+    if(prods.length) return prods[prods.length-1].img;
+    return null;
   }
+  const makeCard=(item,idx)=>{
+    const img=getImgForCat(item.name)||fallbacks[idx%8];
+    const safeCat=item.name.replace(/'/g,"\'");
+    return`<div class="cat-img-card" onclick="setCat('${safeCat}');document.getElementById('catalog').scrollIntoView({behavior:'smooth'})"><img src="${img}" alt="${item.name}" onerror="this.src='${fallbacks[idx%8]}'"/><div class="cat-img-label">${item.icon} ${item.name}</div></div>`;
+  };
+  const g1=document.getElementById('cat-grid-1');
+  const g2=document.getElementById('cat-grid-2');
+  if(g1)g1.innerHTML=top8.slice(0,4).map(makeCard).join('');
+  if(g2)g2.innerHTML=top8.slice(4,8).map((it,i)=>makeCard(it,i+4)).join('');
 }
-function closeFltDrops(){
-  document.querySelectorAll('.flt-dropdown').forEach(function(d){ d.classList.remove('open'); });
-  document.querySelectorAll('.flt-btn').forEach(function(b){ b.classList.remove('open'); });
-}
-
-// Close dropdowns when clicking outside
-document.addEventListener('click', function(e){
-  if(!e.target.closest('.flt-btn') && !e.target.closest('.flt-dropdown')) closeFltDrops();
-});
-
-
 function renderNavCats(){
   const ml=document.getElementById('mob-cat-list');
   if(ml){
@@ -1756,8 +1522,8 @@ function renderNavCats(){
     });
   }
 }
-function setCat(c){setCatFlt(c);}
-function setBrand(b){setBrandFlt(b);document.getElementById('catalog').scrollIntoView({behavior:'smooth'});}
+function setCat(c){S.activeCat=c;S.activeBrand='Semua';S.page=1;renderCatPills();renderBrandPills();renderProds();}
+function setBrand(b){S.activeBrand=b;S.activeCat='Semua';S.page=1;renderCatPills();renderBrandPills();renderProds();document.getElementById('catalog').scrollIntoView({behavior:'smooth'});}
 function filterProds(){S.page=1;renderProds();}
 
 function renderBrandPills(){
@@ -1838,14 +1604,9 @@ function prodCardHTML(p){
       <div class="prod-brand">${p.brand||''}</div>
       <div class="prod-name">${p.name}</div>
       ${priceBlock}
-      <div class="prod-card-btns">
-        <button class="btn-quick-wa" onclick="event.stopPropagation();quickOrderWA('${p.id}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.561 4.14 1.535 5.874L.057 23.986l6.305-1.654A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.894a9.893 9.893 0 01-5.045-1.378l-.361-.214-3.741.981.998-3.648-.235-.374A9.86 9.86 0 012.106 12C2.106 6.561 6.561 2.106 12 2.106c5.438 0 9.894 4.455 9.894 9.894 0 5.438-4.456 9.894-9.894 9.894z"/></svg>WA
-        </button>
-        <button class="btn-detail" onclick="event.stopPropagation();openModal('${p.id}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Detail
-        </button>
-      </div>
+      <button class="btn-pesan" onclick="event.stopPropagation();openModal('${p.id}')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Pesan via WA
+      </button>
     </div>
   </div>`;
 }
@@ -2016,7 +1777,7 @@ function saveProd(){
   };
   if(editId){const idx=S.products.findIndex(x=>x.id===editId);if(idx>=0)S.products[idx]=p;else S.products.unshift(p);}
   else S.products.unshift(p);
-  saveS();renderProds();renderCarousels();renderNavCats();renderTable();renderFltDropdowns();resetForm();showToast('toast-p');
+  saveS();renderProds();renderCarousels();renderNavCats();renderTable();renderBrandPills();resetForm();showToast('toast-p');
   document.getElementById('prod-cnt').textContent=S.products.length;
   const cf=document.getElementById('adm-cat-f');
   if(cf){const cats=['',...new Set(S.products.map(p=>p.cat).filter(Boolean).sort())];const cur=cf.value;cf.innerHTML=cats.map((c,i)=>`<option value="${c}">${i===0?'Semua Kategori':c}</option>`).join('');cf.value=cur;}
@@ -2271,7 +2032,6 @@ function initSupabase(){
 
 async function autoLoadFromSupabase(){
   if(!sbClient)return;
-  showSkeletons();
   try{
     const{data,error}=await sbClient.from('products').select('*').order('created_at',{ascending:false});
     if(error||!data||!data.length)return;
@@ -2284,7 +2044,7 @@ async function autoLoadFromSupabase(){
     }));
     saveS();
     // Re-render everything with fresh data
-    renderProds();renderCarousels();renderNavCats();renderCatGrid();renderFltDropdowns();
+    renderProds();renderCarousels();renderNavCats();renderBrandPills();renderCatGrid();renderCatPills();
     const cnt=document.getElementById('prod-cnt');
     if(cnt)cnt.textContent=S.products.length;
     // Update admin Supabase status if panel is open
@@ -2490,47 +2250,6 @@ function importCSV(){
   document.getElementById('csv-drop-zone').style.background='#fff';
 }
 
-
-// SCROLL & UI
-window.addEventListener('scroll', function(){
-  var bt=document.getElementById('back-top');
-  if(bt) bt.classList.toggle('show', window.scrollY>500);
-});
-function toggleNavSearch(){
-  var inp=document.getElementById('nav-search-main');
-  if(!inp) return;
-  if(inp.classList.contains('open')){
-    if(inp.value){inp.value='';searchFromNav('');}
-    else inp.classList.remove('open');
-  } else {
-    inp.classList.add('open');
-    setTimeout(function(){inp.focus();},80);
-  }
-}
-function searchFromNav(q){
-  var h=document.getElementById('nav-q-hidden');
-  if(h) h.value=q;
-  S.page=1; renderProds();
-  if(q) document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
-}
-function quickOrderWA(id){
-  var p=S.products.find(function(x){return x.id===id;});
-  if(!p) return;
-  var hasWA=p.waPrice&&p.waPrice>0, hasMarket=p.price&&p.price>0;
-  var priceStr=hasWA?'Rp'+Number(p.waPrice).toLocaleString('id-ID'):hasMarket?'Rp'+Number(p.price).toLocaleString('id-ID'):'hubungi kami';
-  var priceLabel=hasWA?'Harga WA: *'+priceStr+'*':'Harga: '+priceStr;
-  var msg='Halo Anugerah Sports!\n\nSaya tertarik dengan:\n*'+p.name+'*\n';
-  if(p.brand) msg+='Brand: '+p.brand+'\n';
-  msg+=priceLabel+'\n\nApakah stok tersedia? Terima kasih!';
-  window.open('https://wa.me/6285755000069?text='+encodeURIComponent(msg),'_blank');
-}
-function showSkeletons(){
-  var g=document.getElementById('prod-grid');
-  if(!g) return;
-  var h='';
-  for(var i=0;i<8;i++) h+='<div class="prod-skel"><div class="prod-skel-img skel"></div><div class="prod-skel-body"><div class="prod-skel-line skel"></div><div class="prod-skel-line short skel"></div><div class="prod-skel-line price skel"></div><div class="prod-skel-line prod-skel-btn skel"></div></div></div>';
-  g.innerHTML=h;
-}
 // ── Scroll Reveal ──
 const rvObs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');rvObs.unobserve(x.target);}}),{threshold:.06});
 document.querySelectorAll('.rv').forEach(el=>rvObs.observe(el));
