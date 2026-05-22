@@ -1421,10 +1421,25 @@ let S={
   page:1, activeCat:'Semua', activeBrand:'Semua'
 };
 
-const STATE_VERSION='as4v17';
+const STATE_VERSION='as4v18';
+const OLD_VERSIONS=['as4','as4v1','as4v2','as4v3','as4v4','as4v5','as4v6','as4v7','as4v8','as4v9','as4v10','as4v11','as4v12','as4v13','as4v14','as4v15','as4v16','as4v17'];
 function loadS(){
   try{
-    ['as4','as4v1','as4v2','as4v3','as4v4','as4v5','as4v6','as4v7','as4v8','as4v9','as4v10','as4v11','as4v12','as4v13','as4v14','as4v15','as4v16'].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
+    // Rescue products from any old version before deleting
+    let rescuedProducts=[];
+    OLD_VERSIONS.forEach(k=>{
+      try{
+        const old=localStorage.getItem(k);
+        if(old){
+          const parsed=JSON.parse(old);
+          if(parsed.products&&parsed.products.length>rescuedProducts.length){
+            rescuedProducts=parsed.products;
+          }
+          localStorage.removeItem(k);
+        }
+      }catch(e){}
+    });
+    // Load current version
     const d=localStorage.getItem(STATE_VERSION);
     if(d){
       const saved=JSON.parse(d);
@@ -1434,6 +1449,11 @@ function loadS(){
         if(Array.isArray(v)&&v.length===0)return;
         S[k]=v;
       });
+    }
+    // If we have no products but found some in old versions, restore them
+    if(S.products.length===0&&rescuedProducts.length>0){
+      S.products=rescuedProducts;
+      console.log('Rescued '+rescuedProducts.length+' products from old state');
     }
   }catch(e){}
 }
