@@ -1833,23 +1833,54 @@ function renderTable(){
 function renderAdminBrands(){const w=document.getElementById('adm-brands');if(!w)return;w.innerHTML=S.brands.map((b,i)=>`<div class="b-tag">${b}<button class="b-x" onclick="rmBrand(${i})">✕</button></div>`).join('');}
 function addBrand(){const i=document.getElementById('new-brand');const v=i.value.trim();if(!v||S.brands.includes(v)){i.value='';return;}S.brands.push(v);i.value='';renderAdminBrands();}
 function rmBrand(i){S.brands.splice(i,1);renderAdminBrands();}
-function saveBrands(){saveS();applyBrands();showToast('toast-b');}
+async function saveBrands(){
+  saveS();
+  applyBrands();
+  showToast('toast-b');
+  if(sbClient){
+    try{
+      await sbClient.from('settings').upsert({key:'brands',value:JSON.stringify(S.brands)},{onConflict:'key'});
+    }catch(e){console.warn('Brands sync failed',e);}
+  }
+}
 
 // ── Stats ──
-function saveStats(){
+async function saveStats(){
   S.stats={t:gv('s-t'),g:gv('s-g'),s:gv('s-s'),u:gv('s-u'),rg:gv('s-rg'),rgc:gv('s-rgc'),rt:gv('s-rt'),rtc:gv('s-rtc'),rs:gv('s-rs'),rsc:gv('s-rsc')};
   saveS();applyStats();showToast('toast-s');
+  if(sbClient){
+    try{
+      await sbClient.from('settings').upsert({key:'stats',value:JSON.stringify(S.stats)},{onConflict:'key'});
+    }catch(e){console.warn('Stats sync failed',e);}
+  }
 }
 function gv(id){const el=document.getElementById(id);return el?el.value:'';}
 
 // ── Tampilan ──
 function uploadLogo(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{S.logo=e.target.result;applyLogo();};r.readAsDataURL(f);}
-function saveLogo(){saveS();showToast('toast-logo');}
-function saveHero(){
+async function saveLogo(){
+  saveS();
+  showToast('toast-logo');
+  if(sbClient){
+    try{
+      await sbClient.from('settings').upsert({key:'logo',value:S.logo},{onConflict:'key'});
+    }catch(e){console.warn('Logo sync failed',e);}
+  }
+}
+async function saveHero(){
   S.heroImg=gv('hero-url')||S.heroImg;
   S.heroImg2=gv('hero-url2')||S.heroImg2;
   S.heroImg3=gv('hero-url3')||S.heroImg3;
   saveS();applyHeroImg();showToast('toast-hero');
+  if(sbClient){
+    try{
+      await sbClient.from('settings').upsert([
+        {key:'heroImg',value:S.heroImg},
+        {key:'heroImg2',value:S.heroImg2},
+        {key:'heroImg3',value:S.heroImg3},
+      ],{onConflict:'key'});
+    }catch(e){console.warn('Hero sync failed',e);}
+  }
 }
 function changePw(){const np=gv('new-pw'),cp=gv('conf-pw');if(!np||np.length<6){alert('Min. 6 karakter!');return;}if(np!==cp){alert('Tidak cocok!');return;}S.pw=np;saveS();document.getElementById('new-pw').value='';document.getElementById('conf-pw').value='';showToast('toast-pw');}
 
@@ -2034,27 +2065,36 @@ async function autoLoadFromSupabase(){
   if(!sbClient)return;
   try{
     const{data,error}=await sbClient.from('products').select('*').order('created_at',{ascending:false});
-    if(error||!data||!data.length)return;
-    // Update products from Supabase
-    S.products=data.map(r=>({
-      id:r.id,name:r.name,brand:r.brand||'',price:r.price||null,
-      waPrice:r.wa_price||null,salePrice:r.sale_price||null,
-      cat:r.cat||'',section:r.section||'all',desc:r.description||'',img:r.img||'',
-      tokoUrl:r.toko_url||'',shopeeUrl:r.shopee_url||'',destyUrl:r.desty_url||''
-    }));
-    saveS();
-    // Re-render everything with fresh data
-    renderProds();renderCarousels();renderNavCats();renderBrandPills();renderCatGrid();renderCatPills();
-    const cnt=document.getElementById('prod-cnt');
-    if(cnt)cnt.textContent=S.products.length;
-    // Update admin Supabase status if panel is open
-    const dot=document.getElementById('sb-dot');
-    const status=document.getElementById('sb-status');
-    const syncBtns=document.getElementById('sb-sync-btns');
-    if(dot)dot.classList.add('connected');
-    if(status)status.textContent='Terhubung — '+S.products.length+' produk dimuat dari Supabase';
-    if(syncBtns)syncBtns.style.display='flex';
-  }catch(e){console.warn('Auto-load from Supabase failed',e);}
+    if(!error&&data&&data.length){
+      S.products=data.map(r=>({
+        id:r.id,name:r.name,brand:r.brand||'',price:r.price||null,
+        waPrice:r.wa_price||null,salePrice:r.sale_price||null,
+        cat:r.cat||'',section:r.section||'all',desc:r.description||'',img:r.img||'',
+        tokoUrl:r.toko_url||'',shopeeUrl:r.shopee_url||'',destyUrl:r.desty_url||''
+      }));
+    }
+  }catch(e){console.warn('Products load failed',e);}
+
+  try{
+    const{data:sets}=await sbClient.from('settings').select('*');
+    if(sets){
+      sets.forEach(row=>{
+        if(row.key==='brands'){try{S.brands=JSON.parse(row.value);}catch(e){}}
+        if(row.key==='logo')S.logo=row.value;
+        if(row.key==='heroImg')S.heroImg=row.value;
+        if(row.key==='heroImg2')S.heroImg2=row.value;
+        if(row.key==='heroImg3')S.heroImg3=row.value;
+        if(row.key==='stats'){try{S.stats=JSON.parse(row.value);}catch(e){}}
+        if(row.key==='catImgOverrides'){try{S.catImgOverrides=JSON.parse(row.value);}catch(e){}}
+        if(row.key==='sportCats'){try{S.sportCats=JSON.parse(row.value);}catch(e){}}
+      });
+    }
+  }catch(e){console.warn('Settings load failed',e);}
+
+  saveS();
+  renderProds();renderCarousels();renderNavCats();renderBrandPills();renderCatGrid();renderCatPills();applyLogo();applyHeroImg();applyStats();applyBrands();
+  const cnt=document.getElementById('prod-cnt');
+  if(cnt)cnt.textContent=S.products.length;
 }
 
 // ════ CATEGORY IMAGE EDITOR ════
