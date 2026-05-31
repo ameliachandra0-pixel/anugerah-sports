@@ -32,8 +32,8 @@ export default function Navbar() {
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center gap-5">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0 font-extrabold text-xl text-navy tracking-tight">
-            ANUGERAH<span className="text-red">SPORTS</span>
+          <Link href="/" className="flex-shrink-0">
+            <img src="https://ibb.co.com/G4WNPrNz" alt="Anugerah Sports" className="h-10 w-auto object-contain"/>
           </Link>
 
           {/* Desktop links */}
