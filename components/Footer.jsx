@@ -15,9 +15,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10 pb-10 border-b border-gray-100">
         {/* Brand */}
         <div>
-          <div className="font-extrabold text-xl text-navy mb-3">
-            ANUGERAH<span className="text-red">SPORTS</span>
-          </div>
+          <img src="https://ibb.co.com/G4WNPrNz" alt="Anugerah Sports" className="h-10 w-auto object-contain mb-3"/>
           <p className="text-sm text-gray-500 leading-relaxed mb-4">
             Authorized Distributor perlengkapan dan pakaian olahraga antara lain merek Victor, Li-Ning, Yonex, dan lain-lainnya. Terpercaya sejak 1974.
           </p>
