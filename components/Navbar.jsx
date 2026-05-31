@@ -33,7 +33,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center gap-5">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <img src="https://ibb.co.com/G4WNPrNz" alt="Anugerah Sports" className="h-10 w-auto object-contain"/>
+            <img src="https://i.ibb.co.com/v63RzMR0/Logo-singa.png" alt="Anugerah Sports" className="h-10 w-auto object-contain"/>
           </Link>
 
           {/* Desktop links */}
