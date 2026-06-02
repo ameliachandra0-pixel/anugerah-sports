@@ -5,17 +5,24 @@ const CartContext = createContext()
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([])
   const [isOpen, setIsOpen] = useState(false)
+  const [hydrated, setHydrated] = useState(false)
 
+  // Load from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('as_cart')
+      const saved = localStorage.getItem('as_cart_v2')
       if (saved) setCart(JSON.parse(saved))
     } catch (e) {}
+    setHydrated(true)
   }, [])
 
+  // Save to localStorage whenever cart changes
   useEffect(() => {
-    try { localStorage.setItem('as_cart', JSON.stringify(cart)) } catch (e) {}
-  }, [cart])
+    if (!hydrated) return
+    try {
+      localStorage.setItem('as_cart_v2', JSON.stringify(cart))
+    } catch (e) {}
+  }, [cart, hydrated])
 
   function addItem(product, qty = 1, note = '') {
     setCart(prev => {
@@ -36,7 +43,6 @@ export function CartProvider({ children }) {
         slug: product.slug || '',
         toko_url: product.toko_url || '',
         shopee_url: product.shopee_url || '',
-        desty_url: product.desty_url || '',
         qty,
         note,
       }]
@@ -63,7 +69,10 @@ export function CartProvider({ children }) {
   }, 0)
 
   return (
-    <CartContext.Provider value={{ cart, addItem, removeItem, updateQty, clearCart, totalItems, totalPrice, isOpen, setIsOpen }}>
+    <CartContext.Provider value={{
+      cart, addItem, removeItem, updateQty, clearCart,
+      totalItems, totalPrice, isOpen, setIsOpen, hydrated
+    }}>
       {children}
     </CartContext.Provider>
   )

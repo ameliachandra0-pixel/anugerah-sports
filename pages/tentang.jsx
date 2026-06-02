@@ -1,7 +1,9 @@
 export default function Tentang() {
   const WA = process.env.NEXT_PUBLIC_WA_NUMBER || '6285755000069'
   return (
-    <div className="bg-white">
+    <>
+      <SEO title="Tentang Kami" description="Anugerah Sports Malang — Toko olahraga terpercaya sejak 1974. Authorized distributor Yonex, Victor, Li-Ning. Kunjungi kami di Jl. Ade Irma Suryani No.3 Malang." url="/tentang"/>
+      <div className="bg-white">
       {/* Hero */}
       <div className="bg-navy py-16 px-6 text-center">
         <p className="text-[11px] font-bold tracking-[3px] uppercase text-white/40 mb-3">Est. 1974</p>
