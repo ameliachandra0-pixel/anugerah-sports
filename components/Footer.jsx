@@ -15,11 +15,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10 pb-10 border-b border-gray-100">
         {/* Brand */}
         <div>
-          <img
-            src="https://i.ibb.co.com/v63RzMR0/Logo-singa.png"
-            alt="Anugerah Sports"
-            className="h-12 w-auto object-contain mb-3"
-          />
+          <div className="font-extrabold text-xl text-navy mb-3">
+            ANUGERAH<span className="text-red">SPORTS</span>
+          </div>
           <p className="text-sm text-gray-500 leading-relaxed mb-4">
             Authorized Distributor perlengkapan dan pakaian olahraga antara lain merek Victor, Li-Ning, Yonex, dan lain-lainnya. Terpercaya sejak 1974.
           </p>
@@ -44,7 +42,7 @@ export default function Footer() {
         <div>
           <p className="text-sm font-extrabold text-gray-900 mb-4">Tautan</p>
           <div className="flex flex-col gap-2">
-            {[['/', 'Beranda'], ['/catalog', 'Produk'], ['/tentang', 'Tentang Kami']].map(([href, label]) => (
+            {[['/',  'Beranda'],['/catalog','Produk'],['/tentang','Tentang Kami']].map(([href, label]) => (
               <Link key={href} href={href} className="text-sm text-gray-500 hover:text-red transition-colors">{label}</Link>
             ))}
           </div>

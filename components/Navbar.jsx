@@ -32,12 +32,8 @@ export default function Navbar() {
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center gap-5">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
-            <img
-              src="https://i.ibb.co.com/v63RzMR0/Logo-singa.png"
-              alt="Anugerah Sports"
-              className="h-11 w-auto object-contain"
-            />
+          <Link href="/" className="flex-shrink-0 font-extrabold text-xl text-navy tracking-tight">
+            ANUGERAH<span className="text-red">SPORTS</span>
           </Link>
 
           {/* Desktop links */}
@@ -107,11 +103,7 @@ export default function Navbar() {
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)}/>
           <div className="absolute top-0 right-0 bottom-0 w-72 bg-white flex flex-col shadow-2xl">
             <div className="flex items-center justify-between px-4 py-4 border-b">
-              <img
-                src="https://i.ibb.co.com/v63RzMR0/Logo-singa.png"
-                alt="Anugerah Sports"
-                className="h-9 w-auto object-contain"
-              />
+              <span className="font-extrabold text-navy">ANUGERAH<span className="text-red">SPORTS</span></span>
               <button onClick={() => setMobileOpen(false)} className="w-8 h-8 rounded-full bg-sand flex items-center justify-center text-gray-400">✕</button>
             </div>
             <div className="flex-1 py-2">
@@ -126,7 +118,7 @@ export default function Navbar() {
                 </Link>
               ))}
             </div>
-            <div className="p-4 border-t">
+            <div className="p-4 border-t flex flex-col gap-3">
               <a
                 href={`https://wa.me/${WA}`}
                 target="_blank"
