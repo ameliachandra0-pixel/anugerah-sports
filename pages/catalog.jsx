@@ -6,99 +6,9 @@ import SEO from '../components/SEO'
 
 const PER_PAGE = 16
 
-export default function Catalog({ products, categories, brands }) {
-  const router = useRouter()
-  const [activeCat, setActiveCat] = useState('Semua')
-  const [activeBrand, setActiveBrand] = useState('Semua')
-  const [sort, setSort] = useState('')
-  const [search, setSearch] = useState('')
-  const [priceMinInput, setPriceMinInput] = useState('')
-  const [priceMaxInput, setPriceMaxInput] = useState('')
-  const [priceMin, setPriceMin] = useState('')
-  const [priceMax, setPriceMax] = useState('')
-  const [page, setPage] = useState(1)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  const minTimer = useRef(null)
-  const maxTimer = useRef(null)
-  const searchTimer = useRef(null)
-
-  useEffect(() => {
-    if (router.query.cat) setActiveCat(router.query.cat)
-    if (router.query.brand) setActiveBrand(router.query.brand)
-  }, [router.query])
-
-  // Debounce search
-  function handleSearch(val) {
-    setSearch(val)
-    clearTimeout(searchTimer.current)
-    searchTimer.current = setTimeout(() => setPage(1), 400)
-  }
-
-  // Debounce price min — only apply filter 600ms after user stops typing
-  function handlePriceMin(val) {
-    setPriceMinInput(val)
-    clearTimeout(minTimer.current)
-    minTimer.current = setTimeout(() => {
-      setPriceMin(val)
-      setPage(1)
-    }, 600)
-  }
-
-  // Debounce price max
-  function handlePriceMax(val) {
-    setPriceMaxInput(val)
-    clearTimeout(maxTimer.current)
-    maxTimer.current = setTimeout(() => {
-      setPriceMax(val)
-      setPage(1)
-    }, 600)
-  }
-
-  function applyPresetPrice(min, max) {
-    setPriceMinInput(min)
-    setPriceMaxInput(max)
-    setPriceMin(min)
-    setPriceMax(max)
-    setPage(1)
-  }
-
-  // Filter
-  let filtered = [...products]
-  if (router.query.section) filtered = filtered.filter(p => p.section === router.query.section)
-  if (activeCat !== 'Semua') filtered = filtered.filter(p => p.cat === activeCat)
-  if (activeBrand !== 'Semua') filtered = filtered.filter(p => p.brand === activeBrand)
-  if (search) filtered = filtered.filter(p =>
-    (p.name + p.brand + p.cat).toLowerCase().includes(search.toLowerCase())
-  )
-  if (priceMin) filtered = filtered.filter(p => {
-    const price = p.wa_price || p.sale_price || p.price || 0
-    return price >= Number(priceMin)
-  })
-  if (priceMax) filtered = filtered.filter(p => {
-    const price = p.wa_price || p.sale_price || p.price || 0
-    return price <= Number(priceMax)
-  })
-  if (sort === 'price-asc') filtered.sort((a, b) => (a.wa_price || a.price || 0) - (b.wa_price || b.price || 0))
-  else if (sort === 'price-desc') filtered.sort((a, b) => (b.wa_price || b.price || 0) - (a.wa_price || a.price || 0))
-  else if (sort === 'name-asc') filtered.sort((a, b) => a.name.localeCompare(b.name))
-
-  const totalPages = Math.ceil(filtered.length / PER_PAGE) || 1
-  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
-
-  function setCat(c) { setActiveCat(c); setPage(1); setSidebarOpen(false) }
-  function setBrand(b) { setActiveBrand(b); setPage(1); setSidebarOpen(false) }
-  function clearFilters() {
-    setActiveCat('Semua'); setActiveBrand('Semua')
-    setSort(''); setSearch('')
-    setPriceMinInput(''); setPriceMaxInput('')
-    setPriceMin(''); setPriceMax('')
-    setPage(1)
-  }
-
-  const hasFilters = activeCat !== 'Semua' || activeBrand !== 'Semua' || sort || search || priceMin || priceMax
-
-  const SidebarContent = () => (
+// ── Sidebar extracted OUTSIDE the page component ──
+function Sidebar({ search, onSearch, sort, onSort, priceMinInput, priceMaxInput, onPriceMin, onPriceMax, onPresetPrice, priceMin, priceMax, onClearPrice, activeCat, onCat, activeBrand, onBrand, categories, brands, products, hasFilters, onClear }) {
+  return (
     <div className="flex flex-col gap-6">
       {/* Search */}
       <div>
@@ -107,7 +17,7 @@ export default function Catalog({ products, categories, brands }) {
           <input
             type="text"
             value={search}
-            onChange={e => handleSearch(e.target.value)}
+            onChange={e => onSearch(e.target.value)}
             placeholder="Nama produk, brand..."
             className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-red"
           />
@@ -120,7 +30,7 @@ export default function Catalog({ products, categories, brands }) {
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Urutkan</p>
         <div className="flex flex-col gap-1">
           {[['', 'Default'], ['price-asc', 'Harga Termurah'], ['price-desc', 'Harga Termahal'], ['name-asc', 'Nama A–Z']].map(([val, label]) => (
-            <button key={val} onClick={() => { setSort(val); setPage(1) }}
+            <button key={val} onClick={() => onSort(val)}
               className={`text-left text-sm px-3 py-2 rounded-lg transition-all ${sort === val ? 'bg-navy text-white font-bold' : 'text-gray-600 hover:bg-sand'}`}>
               {label}
             </button>
@@ -136,7 +46,7 @@ export default function Catalog({ products, categories, brands }) {
             type="number"
             value={priceMinInput}
             placeholder="Min"
-            onChange={e => handlePriceMin(e.target.value)}
+            onChange={e => onPriceMin(e.target.value)}
             className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"
           />
           <span className="text-gray-400 text-xs flex-shrink-0">—</span>
@@ -144,35 +54,20 @@ export default function Catalog({ products, categories, brands }) {
             type="number"
             value={priceMaxInput}
             placeholder="Max"
-            onChange={e => handlePriceMax(e.target.value)}
+            onChange={e => onPriceMax(e.target.value)}
             className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"
           />
         </div>
-        {/* Quick preset buttons */}
         <div className="flex gap-2 mt-2 flex-wrap">
-          {[
-            ['0', '500000', '< 500rb'],
-            ['500000', '1000000', '500rb–1jt'],
-            ['1000000', '3000000', '1jt–3jt'],
-            ['3000000', '', '> 3jt'],
-          ].map(([min, max, label]) => (
-            <button
-              key={label}
-              onClick={() => applyPresetPrice(min, max)}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
-                priceMin === min && priceMax === max
-                  ? 'bg-red text-white border-red'
-                  : 'border-gray-200 text-gray-500 hover:border-red hover:text-red'
-              }`}>
+          {[['0','500000','< 500rb'],['500000','1000000','500rb–1jt'],['1000000','3000000','1jt–3jt'],['3000000','','> 3jt']].map(([min, max, label]) => (
+            <button key={label} onClick={() => onPresetPrice(min, max)}
+              className={`text-xs px-2.5 py-1 rounded-full border transition-all ${priceMin === min && priceMax === max ? 'bg-red text-white border-red' : 'border-gray-200 text-gray-500 hover:border-red hover:text-red'}`}>
               {label}
             </button>
           ))}
         </div>
         {(priceMin || priceMax) && (
-          <button
-            onClick={() => { setPriceMinInput(''); setPriceMaxInput(''); setPriceMin(''); setPriceMax('') }}
-            className="text-xs text-red mt-2 hover:underline"
-          >
+          <button onClick={onClearPrice} className="text-xs text-red mt-2 hover:underline block">
             ✕ Hapus filter harga
           </button>
         )}
@@ -185,7 +80,7 @@ export default function Catalog({ products, categories, brands }) {
           {['Semua', ...categories].map(c => {
             const count = c === 'Semua' ? products.length : products.filter(p => p.cat === c).length
             return (
-              <button key={c} onClick={() => setCat(c)}
+              <button key={c} onClick={() => onCat(c)}
                 className={`flex items-center justify-between text-sm px-3 py-2 rounded-lg transition-all ${activeCat === c ? 'bg-red/10 text-red font-bold' : 'text-gray-600 hover:bg-sand'}`}>
                 <span>{c}</span>
                 <span className={`text-xs ${activeCat === c ? 'text-red' : 'text-gray-400'}`}>{count}</span>
@@ -202,7 +97,7 @@ export default function Catalog({ products, categories, brands }) {
           {['Semua', ...brands].map(b => {
             const count = b === 'Semua' ? products.length : products.filter(p => p.brand === b).length
             return (
-              <button key={b} onClick={() => setBrand(b)}
+              <button key={b} onClick={() => onBrand(b)}
                 className={`flex items-center justify-between text-sm px-3 py-2 rounded-lg transition-all ${activeBrand === b ? 'bg-red/10 text-red font-bold' : 'text-gray-600 hover:bg-sand'}`}>
                 <span>{b}</span>
                 <span className={`text-xs ${activeBrand === b ? 'text-red' : 'text-gray-400'}`}>{count}</span>
@@ -213,12 +108,105 @@ export default function Catalog({ products, categories, brands }) {
       </div>
 
       {hasFilters && (
-        <button onClick={clearFilters} className="text-sm text-red font-semibold hover:underline text-left">
+        <button onClick={onClear} className="text-sm text-red font-semibold hover:underline text-left">
           ✕ Hapus semua filter
         </button>
       )}
     </div>
   )
+}
+
+export default function Catalog({ products, categories, brands }) {
+  const router = useRouter()
+  const [activeCat, setActiveCat] = useState('Semua')
+  const [activeBrand, setActiveBrand] = useState('Semua')
+  const [sort, setSort] = useState('')
+  const [search, setSearch] = useState('')
+  const [priceMinInput, setPriceMinInput] = useState('')
+  const [priceMaxInput, setPriceMaxInput] = useState('')
+  const [priceMin, setPriceMin] = useState('')
+  const [priceMax, setPriceMax] = useState('')
+  const [page, setPage] = useState(1)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const minTimer = useRef(null)
+  const maxTimer = useRef(null)
+
+  useEffect(() => {
+    if (router.query.cat) setActiveCat(router.query.cat)
+    if (router.query.brand) setActiveBrand(router.query.brand)
+  }, [router.query])
+
+  function handleSearch(val) {
+    setSearch(val)
+    setPage(1)
+  }
+
+  function handlePriceMin(val) {
+    setPriceMinInput(val)
+    clearTimeout(minTimer.current)
+    minTimer.current = setTimeout(() => { setPriceMin(val); setPage(1) }, 700)
+  }
+
+  function handlePriceMax(val) {
+    setPriceMaxInput(val)
+    clearTimeout(maxTimer.current)
+    maxTimer.current = setTimeout(() => { setPriceMax(val); setPage(1) }, 700)
+  }
+
+  function applyPresetPrice(min, max) {
+    setPriceMinInput(min); setPriceMaxInput(max)
+    setPriceMin(min); setPriceMax(max); setPage(1)
+  }
+
+  function clearPrice() {
+    setPriceMinInput(''); setPriceMaxInput('')
+    setPriceMin(''); setPriceMax('')
+  }
+
+  function setCat(c) { setActiveCat(c); setPage(1); setSidebarOpen(false) }
+  function setBrand(b) { setActiveBrand(b); setPage(1); setSidebarOpen(false) }
+
+  function clearFilters() {
+    setActiveCat('Semua'); setActiveBrand('Semua')
+    setSort(''); setSearch('')
+    setPriceMinInput(''); setPriceMaxInput('')
+    setPriceMin(''); setPriceMax('')
+    setPage(1)
+  }
+
+  // Filter
+  let filtered = [...products]
+  if (router.query.section) filtered = filtered.filter(p => p.section === router.query.section)
+  if (activeCat !== 'Semua') filtered = filtered.filter(p => p.cat === activeCat)
+  if (activeBrand !== 'Semua') filtered = filtered.filter(p => p.brand === activeBrand)
+  if (search) filtered = filtered.filter(p =>
+    (p.name + p.brand + p.cat).toLowerCase().includes(search.toLowerCase())
+  )
+  if (priceMin) filtered = filtered.filter(p => (p.wa_price || p.sale_price || p.price || 0) >= Number(priceMin))
+  if (priceMax) filtered = filtered.filter(p => (p.wa_price || p.sale_price || p.price || 0) <= Number(priceMax))
+  if (sort === 'price-asc') filtered.sort((a, b) => (a.wa_price || a.price || 0) - (b.wa_price || b.price || 0))
+  else if (sort === 'price-desc') filtered.sort((a, b) => (b.wa_price || b.price || 0) - (a.wa_price || a.price || 0))
+  else if (sort === 'name-asc') filtered.sort((a, b) => a.name.localeCompare(b.name))
+
+  const totalPages = Math.ceil(filtered.length / PER_PAGE) || 1
+  const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+  const hasFilters = activeCat !== 'Semua' || activeBrand !== 'Semua' || sort || search || priceMin || priceMax
+
+  const sidebarProps = {
+    search, onSearch: handleSearch,
+    sort, onSort: (v) => { setSort(v); setPage(1) },
+    priceMinInput, priceMaxInput,
+    onPriceMin: handlePriceMin,
+    onPriceMax: handlePriceMax,
+    onPresetPrice: applyPresetPrice,
+    priceMin, priceMax,
+    onClearPrice: clearPrice,
+    activeCat, onCat: setCat,
+    activeBrand, onBrand: setBrand,
+    categories, brands, products,
+    hasFilters, onClear: clearFilters,
+  }
 
   return (
     <>
@@ -229,7 +217,6 @@ export default function Catalog({ products, categories, brands }) {
       />
 
       <div className="min-h-screen bg-sand">
-        {/* Header */}
         <div className="bg-white border-b border-gray-100 py-8">
           <div className="max-w-7xl mx-auto px-6">
             <h1 className="text-2xl font-extrabold text-gray-900">Semua Produk</h1>
@@ -244,7 +231,7 @@ export default function Catalog({ products, categories, brands }) {
             {/* Desktop Sidebar */}
             <aside className="hidden lg:block w-60 flex-shrink-0">
               <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24">
-                <SidebarContent />
+                <Sidebar {...sidebarProps} />
               </div>
             </aside>
 
@@ -257,8 +244,7 @@ export default function Catalog({ products, categories, brands }) {
                   Filter {hasFilters && <span className="bg-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">!</span>}
                 </button>
                 <div className="flex-1 relative">
-                  <input type="text" value={search}
-                    onChange={e => handleSearch(e.target.value)}
+                  <input type="text" value={search} onChange={e => handleSearch(e.target.value)}
                     placeholder="Cari produk..."
                     className="w-full pl-8 pr-3 py-2.5 border border-gray-200 bg-white rounded-xl text-sm focus:outline-none focus:border-red"/>
                   <svg className="absolute left-2.5 top-3 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -272,25 +258,23 @@ export default function Catalog({ products, categories, brands }) {
                 </select>
               </div>
 
-              {/* Active filter chips */}
+              {/* Active chips */}
               {hasFilters && (
                 <div className="flex flex-wrap gap-2 mb-4">
                   {activeCat !== 'Semua' && (
                     <span className="flex items-center gap-1 bg-red text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                      {activeCat}
-                      <button onClick={() => setCat('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
+                      {activeCat}<button onClick={() => setCat('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
                     </span>
                   )}
                   {activeBrand !== 'Semua' && (
                     <span className="flex items-center gap-1 bg-navy text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                      {activeBrand}
-                      <button onClick={() => setBrand('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
+                      {activeBrand}<button onClick={() => setBrand('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
                     </span>
                   )}
                   {(priceMin || priceMax) && (
                     <span className="flex items-center gap-1 bg-gray-700 text-white text-xs font-bold px-3 py-1.5 rounded-full">
                       {priceMin ? `Rp${Number(priceMin).toLocaleString('id-ID')}` : '0'} — {priceMax ? `Rp${Number(priceMax).toLocaleString('id-ID')}` : '∞'}
-                      <button onClick={() => { setPriceMinInput(''); setPriceMaxInput(''); setPriceMin(''); setPriceMax('') }} className="ml-1 opacity-70 hover:opacity-100">✕</button>
+                      <button onClick={clearPrice} className="ml-1 opacity-70 hover:opacity-100">✕</button>
                     </span>
                   )}
                 </div>
@@ -345,7 +329,9 @@ export default function Catalog({ products, categories, brands }) {
               <span className="font-extrabold text-gray-900">Filter Produk</span>
               <button onClick={() => setSidebarOpen(false)} className="w-8 h-8 rounded-full bg-sand flex items-center justify-center text-gray-400">✕</button>
             </div>
-            <div className="flex-1 overflow-y-auto p-5"><SidebarContent /></div>
+            <div className="flex-1 overflow-y-auto p-5">
+              <Sidebar {...sidebarProps} />
+            </div>
           </div>
         </div>
       )}
