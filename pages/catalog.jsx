@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabase'
 import ProductCard from '../components/ProductCard'
@@ -12,15 +12,56 @@ export default function Catalog({ products, categories, brands }) {
   const [activeBrand, setActiveBrand] = useState('Semua')
   const [sort, setSort] = useState('')
   const [search, setSearch] = useState('')
+  const [priceMinInput, setPriceMinInput] = useState('')
+  const [priceMaxInput, setPriceMaxInput] = useState('')
   const [priceMin, setPriceMin] = useState('')
   const [priceMax, setPriceMax] = useState('')
   const [page, setPage] = useState(1)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  const minTimer = useRef(null)
+  const maxTimer = useRef(null)
+  const searchTimer = useRef(null)
+
   useEffect(() => {
     if (router.query.cat) setActiveCat(router.query.cat)
     if (router.query.brand) setActiveBrand(router.query.brand)
   }, [router.query])
+
+  // Debounce search
+  function handleSearch(val) {
+    setSearch(val)
+    clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => setPage(1), 400)
+  }
+
+  // Debounce price min — only apply filter 600ms after user stops typing
+  function handlePriceMin(val) {
+    setPriceMinInput(val)
+    clearTimeout(minTimer.current)
+    minTimer.current = setTimeout(() => {
+      setPriceMin(val)
+      setPage(1)
+    }, 600)
+  }
+
+  // Debounce price max
+  function handlePriceMax(val) {
+    setPriceMaxInput(val)
+    clearTimeout(maxTimer.current)
+    maxTimer.current = setTimeout(() => {
+      setPriceMax(val)
+      setPage(1)
+    }, 600)
+  }
+
+  function applyPresetPrice(min, max) {
+    setPriceMinInput(min)
+    setPriceMaxInput(max)
+    setPriceMin(min)
+    setPriceMax(max)
+    setPage(1)
+  }
 
   // Filter
   let filtered = [...products]
@@ -49,7 +90,10 @@ export default function Catalog({ products, categories, brands }) {
   function setBrand(b) { setActiveBrand(b); setPage(1); setSidebarOpen(false) }
   function clearFilters() {
     setActiveCat('Semua'); setActiveBrand('Semua')
-    setSort(''); setSearch(''); setPriceMin(''); setPriceMax(''); setPage(1)
+    setSort(''); setSearch('')
+    setPriceMinInput(''); setPriceMaxInput('')
+    setPriceMin(''); setPriceMax('')
+    setPage(1)
   }
 
   const hasFilters = activeCat !== 'Semua' || activeBrand !== 'Semua' || sort || search || priceMin || priceMax
@@ -61,8 +105,9 @@ export default function Catalog({ products, categories, brands }) {
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Cari Produk</p>
         <div className="relative">
           <input
-            type="text" value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1) }}
+            type="text"
+            value={search}
+            onChange={e => handleSearch(e.target.value)}
             placeholder="Nama produk, brand..."
             className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-red"
           />
@@ -88,26 +133,49 @@ export default function Catalog({ products, categories, brands }) {
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Rentang Harga</p>
         <div className="flex gap-2 items-center">
           <input
-            type="number" value={priceMin} placeholder="Min"
-            onChange={e => { setPriceMin(e.target.value); setPage(1) }}
-            className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-red"
+            type="number"
+            value={priceMinInput}
+            placeholder="Min"
+            onChange={e => handlePriceMin(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"
           />
           <span className="text-gray-400 text-xs flex-shrink-0">—</span>
           <input
-            type="number" value={priceMax} placeholder="Max"
-            onChange={e => { setPriceMax(e.target.value); setPage(1) }}
-            className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-red"
+            type="number"
+            value={priceMaxInput}
+            placeholder="Max"
+            onChange={e => handlePriceMax(e.target.value)}
+            className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"
           />
         </div>
+        {/* Quick preset buttons */}
         <div className="flex gap-2 mt-2 flex-wrap">
-          {[['0','500000','< 500rb'],['500000','1000000','500rb–1jt'],['1000000','3000000','1jt–3jt'],['3000000','','> 3jt']].map(([min, max, label]) => (
-            <button key={label}
-              onClick={() => { setPriceMin(min); setPriceMax(max); setPage(1) }}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-all ${priceMin === min && priceMax === max ? 'bg-red text-white border-red' : 'border-gray-200 text-gray-500 hover:border-red hover:text-red'}`}>
+          {[
+            ['0', '500000', '< 500rb'],
+            ['500000', '1000000', '500rb–1jt'],
+            ['1000000', '3000000', '1jt–3jt'],
+            ['3000000', '', '> 3jt'],
+          ].map(([min, max, label]) => (
+            <button
+              key={label}
+              onClick={() => applyPresetPrice(min, max)}
+              className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
+                priceMin === min && priceMax === max
+                  ? 'bg-red text-white border-red'
+                  : 'border-gray-200 text-gray-500 hover:border-red hover:text-red'
+              }`}>
               {label}
             </button>
           ))}
         </div>
+        {(priceMin || priceMax) && (
+          <button
+            onClick={() => { setPriceMinInput(''); setPriceMaxInput(''); setPriceMin(''); setPriceMax('') }}
+            className="text-xs text-red mt-2 hover:underline"
+          >
+            ✕ Hapus filter harga
+          </button>
+        )}
       </div>
 
       {/* Category */}
@@ -189,7 +257,8 @@ export default function Catalog({ products, categories, brands }) {
                   Filter {hasFilters && <span className="bg-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">!</span>}
                 </button>
                 <div className="flex-1 relative">
-                  <input type="text" value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}
+                  <input type="text" value={search}
+                    onChange={e => handleSearch(e.target.value)}
                     placeholder="Cari produk..."
                     className="w-full pl-8 pr-3 py-2.5 border border-gray-200 bg-white rounded-xl text-sm focus:outline-none focus:border-red"/>
                   <svg className="absolute left-2.5 top-3 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -208,18 +277,20 @@ export default function Catalog({ products, categories, brands }) {
                 <div className="flex flex-wrap gap-2 mb-4">
                   {activeCat !== 'Semua' && (
                     <span className="flex items-center gap-1 bg-red text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                      {activeCat} <button onClick={() => setCat('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
+                      {activeCat}
+                      <button onClick={() => setCat('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
                     </span>
                   )}
                   {activeBrand !== 'Semua' && (
                     <span className="flex items-center gap-1 bg-navy text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                      {activeBrand} <button onClick={() => setBrand('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
+                      {activeBrand}
+                      <button onClick={() => setBrand('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
                     </span>
                   )}
                   {(priceMin || priceMax) && (
                     <span className="flex items-center gap-1 bg-gray-700 text-white text-xs font-bold px-3 py-1.5 rounded-full">
                       {priceMin ? `Rp${Number(priceMin).toLocaleString('id-ID')}` : '0'} — {priceMax ? `Rp${Number(priceMax).toLocaleString('id-ID')}` : '∞'}
-                      <button onClick={() => { setPriceMin(''); setPriceMax('') }} className="ml-1 opacity-70 hover:opacity-100">✕</button>
+                      <button onClick={() => { setPriceMinInput(''); setPriceMaxInput(''); setPriceMin(''); setPriceMax('') }} className="ml-1 opacity-70 hover:opacity-100">✕</button>
                     </span>
                   )}
                 </div>
