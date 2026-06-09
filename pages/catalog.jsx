@@ -3,20 +3,75 @@ import { useRouter } from 'next/router'
 import { supabase } from '../lib/supabase'
 import ProductCard from '../components/ProductCard'
 import SEO from '../components/SEO'
+import { DEFAULT_HIERARCHY, getDescendants, matchesSport, matchesCategory } from '../lib/categories'
 
 const PER_PAGE = 16
 
-// ── Sidebar extracted OUTSIDE the page component ──
-function Sidebar({ search, onSearch, sort, onSort, priceMinInput, priceMaxInput, onPriceMin, onPriceMax, onPresetPrice, priceMin, priceMax, onClearPrice, activeCat, onCat, activeBrand, onBrand, categories, brands, products, hasFilters, onClear }) {
+// ── Recursive category tree node ──
+function TreeNode({ node, activeCat, onSelect, depth = 0 }) {
+  const [open, setOpen] = useState(depth < 2)
+  const hasChildren = node.children?.length > 0
+  const isActive = activeCat === node.name
+
   return (
-    <div className="flex flex-col gap-6">
+    <div>
+      <div
+        className={`flex items-center justify-between text-sm px-3 py-1.5 rounded-lg cursor-pointer transition-all ${
+          isActive ? 'bg-red/10 text-red font-bold' : 'text-gray-600 hover:bg-sand'
+        }`}
+        style={{ paddingLeft: `${12 + depth * 14}px` }}
+      >
+        <div className="flex items-center gap-1.5 flex-1" onClick={() => onSelect(node.name)}>
+          {hasChildren && (
+            <button
+              onClick={e => { e.stopPropagation(); setOpen(o => !o) }}
+              className="text-gray-400 text-xs w-4 flex-shrink-0"
+            >
+              {open ? '▼' : '▶'}
+            </button>
+          )}
+          {!hasChildren && <span className="w-4 flex-shrink-0"/>}
+          <span>{node.name}</span>
+        </div>
+      </div>
+      {hasChildren && open && (
+        <div>
+          {node.children.map(child => (
+            <TreeNode
+              key={child.name}
+              node={child}
+              activeCat={activeCat}
+              onSelect={onSelect}
+              depth={depth + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Sidebar component (outside page to prevent focus loss) ──
+function Sidebar({
+  search, onSearch, sort, onSort,
+  priceMinInput, priceMaxInput, onPriceMin, onPriceMax,
+  onPresetPrice, priceMin, priceMax, onClearPrice,
+  activeSport, onSport,
+  activeCat, onCat,
+  activeBrand, onBrand,
+  hierarchy, brands, products,
+  hasFilters, onClear,
+}) {
+  const { sports = [], tree = [] } = hierarchy
+
+  return (
+    <div className="flex flex-col gap-5">
       {/* Search */}
       <div>
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Cari Produk</p>
         <div className="relative">
           <input
-            type="text"
-            value={search}
+            type="text" value={search}
             onChange={e => onSearch(e.target.value)}
             placeholder="Nama produk, brand..."
             className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-red"
@@ -25,10 +80,34 @@ function Sidebar({ search, onSearch, sort, onSort, priceMinInput, priceMaxInput,
         </div>
       </div>
 
+      <div className="h-px bg-gray-100"/>
+
+      {/* Sport filter */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Olahraga</p>
+        <div className="flex flex-wrap gap-1.5">
+          {['Semua', ...sports].map(s => (
+            <button
+              key={s}
+              onClick={() => onSport(s)}
+              className={`text-xs px-3 py-1.5 rounded-full border font-semibold transition-all ${
+                activeSport === s
+                  ? 'bg-navy text-white border-navy'
+                  : 'border-gray-200 text-gray-500 hover:border-navy hover:text-navy'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="h-px bg-gray-100"/>
+
       {/* Sort */}
       <div>
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Urutkan</p>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5">
           {[['', 'Default'], ['price-asc', 'Harga Termurah'], ['price-desc', 'Harga Termahal'], ['name-asc', 'Nama A–Z']].map(([val, label]) => (
             <button key={val} onClick={() => onSort(val)}
               className={`text-left text-sm px-3 py-2 rounded-lg transition-all ${sort === val ? 'bg-navy text-white font-bold' : 'text-gray-600 hover:bg-sand'}`}>
@@ -38,86 +117,108 @@ function Sidebar({ search, onSearch, sort, onSort, priceMinInput, priceMaxInput,
         </div>
       </div>
 
+      <div className="h-px bg-gray-100"/>
+
       {/* Price range */}
       <div>
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Rentang Harga</p>
         <div className="flex gap-2 items-center">
-          <input
-            type="number"
-            value={priceMinInput}
-            placeholder="Min"
+          <input type="number" value={priceMinInput} placeholder="Min"
             onChange={e => onPriceMin(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"
-          />
+            className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"/>
           <span className="text-gray-400 text-xs flex-shrink-0">—</span>
-          <input
-            type="number"
-            value={priceMaxInput}
-            placeholder="Max"
+          <input type="number" value={priceMaxInput} placeholder="Max"
             onChange={e => onPriceMax(e.target.value)}
-            className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"
-          />
+            className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-red"/>
         </div>
-        <div className="flex gap-2 mt-2 flex-wrap">
+        <div className="flex gap-1.5 mt-2 flex-wrap">
           {[['0','500000','< 500rb'],['500000','1000000','500rb–1jt'],['1000000','3000000','1jt–3jt'],['3000000','','> 3jt']].map(([min, max, label]) => (
             <button key={label} onClick={() => onPresetPrice(min, max)}
-              className={`text-xs px-2.5 py-1 rounded-full border transition-all ${priceMin === min && priceMax === max ? 'bg-red text-white border-red' : 'border-gray-200 text-gray-500 hover:border-red hover:text-red'}`}>
+              className={`text-xs px-2 py-1 rounded-full border transition-all ${priceMin === min && priceMax === max ? 'bg-red text-white border-red' : 'border-gray-200 text-gray-500 hover:border-red hover:text-red'}`}>
               {label}
             </button>
           ))}
         </div>
         {(priceMin || priceMax) && (
-          <button onClick={onClearPrice} className="text-xs text-red mt-2 hover:underline block">
-            ✕ Hapus filter harga
-          </button>
+          <button onClick={onClearPrice} className="text-xs text-red mt-1.5 hover:underline block">✕ Hapus filter harga</button>
         )}
       </div>
 
-      {/* Category */}
+      <div className="h-px bg-gray-100"/>
+
+      {/* Category tree */}
       <div>
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Kategori</p>
-        <div className="flex flex-col gap-0.5">
-          {['Semua', ...categories].map(c => {
-            const count = c === 'Semua' ? products.length : products.filter(p => p.cat === c).length
-            return (
-              <button key={c} onClick={() => onCat(c)}
-                className={`flex items-center justify-between text-sm px-3 py-2 rounded-lg transition-all ${activeCat === c ? 'bg-red/10 text-red font-bold' : 'text-gray-600 hover:bg-sand'}`}>
-                <span>{c}</span>
-                <span className={`text-xs ${activeCat === c ? 'text-red' : 'text-gray-400'}`}>{count}</span>
-              </button>
-            )
-          })}
-        </div>
+        <button
+          onClick={() => onCat('Semua')}
+          className={`flex items-center justify-between w-full text-sm px-3 py-1.5 rounded-lg transition-all mb-0.5 ${activeCat === 'Semua' ? 'bg-red/10 text-red font-bold' : 'text-gray-600 hover:bg-sand'}`}
+        >
+          <span>Semua Kategori</span>
+          <span className={`text-xs ${activeCat === 'Semua' ? 'text-red' : 'text-gray-400'}`}>{products.length}</span>
+        </button>
+        {tree.map(node => (
+          <TreeNode
+            key={node.name}
+            node={node}
+            activeCat={activeCat}
+            onSelect={onCat}
+            depth={0}
+          />
+        ))}
       </div>
+
+      <div className="h-px bg-gray-100"/>
 
       {/* Brand */}
       <div>
         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Brand</p>
-        <div className="flex flex-col gap-0.5">
-          {['Semua', ...brands].map(b => {
-            const count = b === 'Semua' ? products.length : products.filter(p => p.brand === b).length
-            return (
-              <button key={b} onClick={() => onBrand(b)}
-                className={`flex items-center justify-between text-sm px-3 py-2 rounded-lg transition-all ${activeBrand === b ? 'bg-red/10 text-red font-bold' : 'text-gray-600 hover:bg-sand'}`}>
-                <span>{b}</span>
-                <span className={`text-xs ${activeBrand === b ? 'text-red' : 'text-gray-400'}`}>{count}</span>
-              </button>
-            )
-          })}
-        </div>
+        <BrandList brands={brands} activeBrand={activeBrand} onBrand={onBrand} products={products}/>
       </div>
 
       {hasFilters && (
-        <button onClick={onClear} className="text-sm text-red font-semibold hover:underline text-left">
-          ✕ Hapus semua filter
+        <>
+          <div className="h-px bg-gray-100"/>
+          <button onClick={onClear} className="text-sm text-red font-semibold hover:underline text-left">
+            ✕ Hapus semua filter
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
+// Brand list with show more
+function BrandList({ brands, activeBrand, onBrand, products }) {
+  const [showAll, setShowAll] = useState(false)
+  const MAX = 5
+  const visible = showAll ? brands : brands.slice(0, MAX)
+
+  return (
+    <div>
+      <div className="flex flex-col gap-0.5">
+        {['Semua', ...visible].map(b => {
+          const count = b === 'Semua' ? products.length : products.filter(p => p.brand === b).length
+          return (
+            <button key={b} onClick={() => onBrand(b)}
+              className={`flex items-center justify-between text-sm px-3 py-1.5 rounded-lg transition-all ${activeBrand === b ? 'bg-red/10 text-red font-bold' : 'text-gray-600 hover:bg-sand'}`}>
+              <span>{b}</span>
+              <span className={`text-xs ${activeBrand === b ? 'text-red' : 'text-gray-400'}`}>{count}</span>
+            </button>
+          )
+        })}
+      </div>
+      {brands.length > MAX && (
+        <button onClick={() => setShowAll(s => !s)} className="text-xs text-red font-semibold mt-1.5 hover:underline px-3">
+          {showAll ? '▲ Lebih sedikit' : `▼ Lihat ${brands.length - MAX} lainnya`}
         </button>
       )}
     </div>
   )
 }
 
-export default function Catalog({ products, categories, brands }) {
+export default function Catalog({ products, brands, hierarchy }) {
   const router = useRouter()
+  const [activeSport, setActiveSport] = useState('Semua')
   const [activeCat, setActiveCat] = useState('Semua')
   const [activeBrand, setActiveBrand] = useState('Semua')
   const [sort, setSort] = useState('')
@@ -128,61 +229,35 @@ export default function Catalog({ products, categories, brands }) {
   const [priceMax, setPriceMax] = useState('')
   const [page, setPage] = useState(1)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
   const minTimer = useRef(null)
   const maxTimer = useRef(null)
 
   useEffect(() => {
     if (router.query.cat) setActiveCat(router.query.cat)
     if (router.query.brand) setActiveBrand(router.query.brand)
+    if (router.query.sport) setActiveSport(router.query.sport)
   }, [router.query])
 
-  function handleSearch(val) {
-    setSearch(val)
-    setPage(1)
-  }
-
-  function handlePriceMin(val) {
-    setPriceMinInput(val)
-    clearTimeout(minTimer.current)
-    minTimer.current = setTimeout(() => { setPriceMin(val); setPage(1) }, 700)
-  }
-
-  function handlePriceMax(val) {
-    setPriceMaxInput(val)
-    clearTimeout(maxTimer.current)
-    maxTimer.current = setTimeout(() => { setPriceMax(val); setPage(1) }, 700)
-  }
-
-  function applyPresetPrice(min, max) {
-    setPriceMinInput(min); setPriceMaxInput(max)
-    setPriceMin(min); setPriceMax(max); setPage(1)
-  }
-
-  function clearPrice() {
-    setPriceMinInput(''); setPriceMaxInput('')
-    setPriceMin(''); setPriceMax('')
-  }
-
+  function handleSearch(val) { setSearch(val); setPage(1) }
+  function handlePriceMin(val) { setPriceMinInput(val); clearTimeout(minTimer.current); minTimer.current = setTimeout(() => { setPriceMin(val); setPage(1) }, 700) }
+  function handlePriceMax(val) { setPriceMaxInput(val); clearTimeout(maxTimer.current); maxTimer.current = setTimeout(() => { setPriceMax(val); setPage(1) }, 700) }
+  function applyPresetPrice(min, max) { setPriceMinInput(min); setPriceMaxInput(max); setPriceMin(min); setPriceMax(max); setPage(1) }
+  function clearPrice() { setPriceMinInput(''); setPriceMaxInput(''); setPriceMin(''); setPriceMax('') }
+  function setSport(s) { setActiveSport(s); setPage(1) }
   function setCat(c) { setActiveCat(c); setPage(1); setSidebarOpen(false) }
   function setBrand(b) { setActiveBrand(b); setPage(1); setSidebarOpen(false) }
-
   function clearFilters() {
-    setActiveCat('Semua'); setActiveBrand('Semua')
-    setSort(''); setSearch('')
-    setPriceMinInput(''); setPriceMaxInput('')
-    setPriceMin(''); setPriceMax('')
-    setPage(1)
+    setActiveSport('Semua'); setActiveCat('Semua'); setActiveBrand('Semua')
+    setSort(''); setSearch(''); setPriceMinInput(''); setPriceMaxInput(''); setPriceMin(''); setPriceMax(''); setPage(1)
   }
 
   // Filter
   let filtered = [...products]
   if (router.query.section) filtered = filtered.filter(p => p.section === router.query.section)
-  if (activeCat !== 'Semua') filtered = filtered.filter(p => p.cat === activeCat)
+  filtered = filtered.filter(p => matchesSport(p, activeSport))
+  filtered = filtered.filter(p => matchesCategory(p, activeCat, hierarchy.tree || []))
   if (activeBrand !== 'Semua') filtered = filtered.filter(p => p.brand === activeBrand)
-  if (search) filtered = filtered.filter(p =>
-    (p.name + p.brand + p.cat).toLowerCase().includes(search.toLowerCase())
-  )
+  if (search) filtered = filtered.filter(p => (p.name + p.brand + p.cat).toLowerCase().includes(search.toLowerCase()))
   if (priceMin) filtered = filtered.filter(p => (p.wa_price || p.sale_price || p.price || 0) >= Number(priceMin))
   if (priceMax) filtered = filtered.filter(p => (p.wa_price || p.sale_price || p.price || 0) <= Number(priceMax))
   if (sort === 'price-asc') filtered.sort((a, b) => (a.wa_price || a.price || 0) - (b.wa_price || b.price || 0))
@@ -191,31 +266,23 @@ export default function Catalog({ products, categories, brands }) {
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE) || 1
   const paged = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE)
-  const hasFilters = activeCat !== 'Semua' || activeBrand !== 'Semua' || sort || search || priceMin || priceMax
+  const hasFilters = activeSport !== 'Semua' || activeCat !== 'Semua' || activeBrand !== 'Semua' || sort || search || priceMin || priceMax
 
   const sidebarProps = {
     search, onSearch: handleSearch,
-    sort, onSort: (v) => { setSort(v); setPage(1) },
-    priceMinInput, priceMaxInput,
-    onPriceMin: handlePriceMin,
-    onPriceMax: handlePriceMax,
-    onPresetPrice: applyPresetPrice,
-    priceMin, priceMax,
-    onClearPrice: clearPrice,
+    sort, onSort: v => { setSort(v); setPage(1) },
+    priceMinInput, priceMaxInput, onPriceMin: handlePriceMin, onPriceMax: handlePriceMax,
+    onPresetPrice: applyPresetPrice, priceMin, priceMax, onClearPrice: clearPrice,
+    activeSport, onSport: setSport,
     activeCat, onCat: setCat,
     activeBrand, onBrand: setBrand,
-    categories, brands, products,
+    hierarchy, brands, products,
     hasFilters, onClear: clearFilters,
   }
 
   return (
     <>
-      <SEO
-        title="Katalog Produk"
-        description="Temukan raket badminton, sepatu, tas, shuttlecock, dan perlengkapan olahraga lainnya dari brand Yonex, Victor, Li-Ning dan lainnya. 100% original."
-        url="/catalog"
-      />
-
+      <SEO title="Katalog Produk" description="Temukan raket badminton, sepatu, tas, shuttlecock, dan perlengkapan olahraga. 100% original." url="/catalog"/>
       <div className="min-h-screen bg-sand">
         <div className="bg-white border-b border-gray-100 py-8">
           <div className="max-w-7xl mx-auto px-6">
@@ -228,15 +295,15 @@ export default function Catalog({ products, categories, brands }) {
 
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex gap-8">
-            {/* Desktop Sidebar */}
+            {/* Desktop sidebar */}
             <aside className="hidden lg:block w-60 flex-shrink-0">
-              <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24">
-                <Sidebar {...sidebarProps} />
+              <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+                <Sidebar {...sidebarProps}/>
               </div>
             </aside>
 
             <div className="flex-1 min-w-0">
-              {/* Mobile filter bar */}
+              {/* Mobile bar */}
               <div className="flex items-center gap-3 mb-5 lg:hidden">
                 <button onClick={() => setSidebarOpen(true)}
                   className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2.5 rounded-xl text-sm font-bold text-gray-700 shadow-sm">
@@ -244,8 +311,7 @@ export default function Catalog({ products, categories, brands }) {
                   Filter {hasFilters && <span className="bg-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">!</span>}
                 </button>
                 <div className="flex-1 relative">
-                  <input type="text" value={search} onChange={e => handleSearch(e.target.value)}
-                    placeholder="Cari produk..."
+                  <input type="text" value={search} onChange={e => handleSearch(e.target.value)} placeholder="Cari produk..."
                     className="w-full pl-8 pr-3 py-2.5 border border-gray-200 bg-white rounded-xl text-sm focus:outline-none focus:border-red"/>
                   <svg className="absolute left-2.5 top-3 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </div>
@@ -261,22 +327,10 @@ export default function Catalog({ products, categories, brands }) {
               {/* Active chips */}
               {hasFilters && (
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {activeCat !== 'Semua' && (
-                    <span className="flex items-center gap-1 bg-red text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                      {activeCat}<button onClick={() => setCat('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
-                    </span>
-                  )}
-                  {activeBrand !== 'Semua' && (
-                    <span className="flex items-center gap-1 bg-navy text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                      {activeBrand}<button onClick={() => setBrand('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button>
-                    </span>
-                  )}
-                  {(priceMin || priceMax) && (
-                    <span className="flex items-center gap-1 bg-gray-700 text-white text-xs font-bold px-3 py-1.5 rounded-full">
-                      {priceMin ? `Rp${Number(priceMin).toLocaleString('id-ID')}` : '0'} — {priceMax ? `Rp${Number(priceMax).toLocaleString('id-ID')}` : '∞'}
-                      <button onClick={clearPrice} className="ml-1 opacity-70 hover:opacity-100">✕</button>
-                    </span>
-                  )}
+                  {activeSport !== 'Semua' && <span className="flex items-center gap-1 bg-navy text-white text-xs font-bold px-3 py-1.5 rounded-full">{activeSport}<button onClick={() => setSport('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button></span>}
+                  {activeCat !== 'Semua' && <span className="flex items-center gap-1 bg-red text-white text-xs font-bold px-3 py-1.5 rounded-full">{activeCat}<button onClick={() => setCat('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button></span>}
+                  {activeBrand !== 'Semua' && <span className="flex items-center gap-1 bg-gray-700 text-white text-xs font-bold px-3 py-1.5 rounded-full">{activeBrand}<button onClick={() => setBrand('Semua')} className="ml-1 opacity-70 hover:opacity-100">✕</button></span>}
+                  {(priceMin || priceMax) && <span className="flex items-center gap-1 bg-gray-500 text-white text-xs font-bold px-3 py-1.5 rounded-full">{priceMin ? `Rp${Number(priceMin).toLocaleString('id-ID')}` : '0'}—{priceMax ? `Rp${Number(priceMax).toLocaleString('id-ID')}` : '∞'}<button onClick={clearPrice} className="ml-1 opacity-70 hover:opacity-100">✕</button></span>}
                 </div>
               )}
 
@@ -298,21 +352,16 @@ export default function Catalog({ products, categories, brands }) {
               {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-2 mt-8 flex-wrap">
                   <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                    className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-600 disabled:opacity-30 hover:bg-sand transition-all">‹</button>
+                    className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-600 disabled:opacity-30 hover:bg-sand">‹</button>
                   {Array.from({ length: totalPages }, (_, i) => i + 1)
                     .filter(n => n === 1 || n === totalPages || Math.abs(n - page) <= 1)
-                    .reduce((acc, n, idx, arr) => {
-                      if (idx > 0 && n - arr[idx - 1] > 1) acc.push('...')
-                      acc.push(n); return acc
-                    }, [])
-                    .map((n, i) => n === '...'
-                      ? <span key={i} className="px-2 text-gray-400">…</span>
-                      : <button key={n} onClick={() => setPage(n)}
-                          className={`w-9 h-9 rounded-lg border text-sm font-bold transition-all ${page === n ? 'bg-navy border-navy text-white' : 'bg-white border-gray-200 text-gray-600 hover:bg-sand'}`}>{n}</button>
+                    .reduce((acc, n, idx, arr) => { if (idx > 0 && n - arr[idx-1] > 1) acc.push('...'); acc.push(n); return acc }, [])
+                    .map((n, i) => n === '...' ? <span key={i} className="px-2 text-gray-400">…</span>
+                      : <button key={n} onClick={() => setPage(n)} className={`w-9 h-9 rounded-lg border text-sm font-bold transition-all ${page === n ? 'bg-navy border-navy text-white' : 'bg-white border-gray-200 text-gray-600 hover:bg-sand'}`}>{n}</button>
                     )
                   }
                   <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                    className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-600 disabled:opacity-30 hover:bg-sand transition-all">›</button>
+                    className="px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm font-bold text-gray-600 disabled:opacity-30 hover:bg-sand">›</button>
                 </div>
               )}
             </div>
@@ -329,9 +378,7 @@ export default function Catalog({ products, categories, brands }) {
               <span className="font-extrabold text-gray-900">Filter Produk</span>
               <button onClick={() => setSidebarOpen(false)} className="w-8 h-8 rounded-full bg-sand flex items-center justify-center text-gray-400">✕</button>
             </div>
-            <div className="flex-1 overflow-y-auto p-5">
-              <Sidebar {...sidebarProps} />
-            </div>
+            <div className="flex-1 overflow-y-auto p-5"><Sidebar {...sidebarProps}/></div>
           </div>
         </div>
       )}
@@ -340,9 +387,18 @@ export default function Catalog({ products, categories, brands }) {
 }
 
 export async function getServerSideProps() {
-  const { data: products } = await supabase.from('products').select('*').order('created_at', { ascending: false })
+  const [{ data: products }, { data: settings }] = await Promise.all([
+    supabase.from('products').select('*').order('created_at', { ascending: false }),
+    supabase.from('settings').select('*').eq('key', 'category_hierarchy'),
+  ])
+
   const all = products || []
-  const categories = [...new Set(all.map(p => p.cat).filter(Boolean))].sort()
   const brands = [...new Set(all.map(p => p.brand).filter(Boolean))].sort()
-  return { props: { products: all, categories, brands } }
+
+  let hierarchy = DEFAULT_HIERARCHY
+  if (settings?.[0]?.value) {
+    try { hierarchy = JSON.parse(settings[0].value) } catch (e) {}
+  }
+
+  return { props: { products: all, brands, hierarchy } }
 }
