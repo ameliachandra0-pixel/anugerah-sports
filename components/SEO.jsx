@@ -43,7 +43,7 @@ export default function SEO({
       <meta name="twitter:image" content={fullImg}/>
 
       {/* Extra SEO */}
-      <meta name="robots" content="index, follow"/>
+      <meta name="google-site-verification" content="4Xx54eWpHUvfv4-q7E4Z1OAK_dHKMUXEkJ6kvz1N8PI"/>
       <meta name="author" content={siteName}/>
       <meta name="keywords" content="toko olahraga malang, raket badminton malang, yonex malang, victor malang, li-ning malang, anugerah sports"/>
       <link rel="canonical" href={fullUrl}/>
